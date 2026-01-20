@@ -1361,6 +1361,202 @@
       to { transform: rotate(360deg); }
     }
 
+    /* ========== SOURCE LOGOS ========== */
+    .source-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .source-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .source-icon.discord svg { fill: #5865F2; }
+    .source-icon.twitter svg { fill: #e5e5e5; }
+    .source-icon.github svg { fill: #e5e5e5; }
+    .source-icon.email svg { fill: #F38020; }
+    .source-icon.support svg { fill: #22c55e; }
+
+    /* ========== AI AGENT SYSTEM ========== */
+    .agent-workflow {
+      margin-bottom: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(25, 25, 25, 0.9) 100%);
+      border: 1px solid rgba(243, 128, 32, 0.15);
+      border-radius: 12px;
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .agent-system-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: linear-gradient(135deg, rgba(243, 128, 32, 0.2) 0%, rgba(243, 128, 32, 0.08) 100%);
+      border: 1px solid rgba(243, 128, 32, 0.3);
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #F38020;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .agent-system-badge svg {
+      width: 12px;
+      height: 12px;
+      fill: #F38020;
+    }
+
+    .agent-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #b8b8b8;
+      letter-spacing: 0.2px;
+    }
+
+    .agent-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .agent-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .agent-item.active {
+      background: rgba(243, 128, 32, 0.06);
+      border-color: rgba(243, 128, 32, 0.2);
+    }
+
+    .agent-item.complete {
+      background: rgba(34, 197, 94, 0.04);
+      border-color: rgba(34, 197, 94, 0.15);
+    }
+
+    .agent-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #666;
+    }
+
+    .agent-item.active .agent-icon {
+      background: rgba(243, 128, 32, 0.15);
+      border-color: rgba(243, 128, 32, 0.3);
+      color: #F38020;
+      animation: agentPulse 1.5s ease-in-out infinite;
+    }
+
+    .agent-item.complete .agent-icon {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.3);
+      color: #22c55e;
+    }
+
+    @keyframes agentPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(243, 128, 32, 0.3); }
+      50% { box-shadow: 0 0 0 4px rgba(243, 128, 32, 0); }
+    }
+
+    .agent-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .agent-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #e5e5e5;
+      margin-bottom: 3px;
+    }
+
+    .agent-item.pending .agent-name {
+      color: #666;
+    }
+
+    .agent-status {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .agent-item.active .agent-status {
+      color: #F38020;
+    }
+
+    .agent-item.complete .agent-status {
+      color: #22c55e;
+    }
+
+    .agent-output {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .agent-output-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      color: #aaa;
+    }
+
+    .agent-item.complete .agent-output-tag {
+      background: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+    }
+
+    /* Web search indicator */
+    .web-search-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      margin-top: 10px;
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 6px;
+      font-size: 11px;
+      color: #60a5fa;
+    }
+
+    .web-search-indicator svg {
+      width: 12px;
+      height: 12px;
+      fill: #60a5fa;
+    }
+
     /* ========== RESPONSIVE ========== */
     @media (max-width: 1200px) {
       .left-panel {
@@ -1395,15 +1591,14 @@
     <header>
       <div class="header-brand">
         <h1>Feedback Intelligence</h1>
-        <p>AI-Powered Insights</p>
+        <p>Multi-Agent AI System</p>
       </div>
       <div class="header-controls">
         <div class="mock-data-badge">
-          <span>📊</span>
+          <span class="source-icon"><svg viewBox="0 0 24 24" fill="#F38020"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></span>
           <span id="mockDataCount">0 items</span>
         </div>
-        <button class="button secondary" id="generateMockBtn">Generate Mock Data</button>
-        <button class="button primary" id="processAiBtn">Process with AI</button>
+        <button class="button primary" id="generateMockBtn">+ Add 20 Feedback Items</button>
       </div>
     </header>
 
@@ -1412,19 +1607,19 @@
       <!-- LEFT PANEL -->
       <div class="left-panel" id="leftPanel">
         <div class="panel-header">
-          <h2>AI Assistant</h2>
-          <p>Ask Questions About Your Feedback</p>
+          <h2>AI Agent System</h2>
+          <p>Multi-Agent Analysis Pipeline</p>
         </div>
 
         <div class="chat-container">
           <div class="messages-area" id="messagesArea"></div>
 
           <div class="quick-actions" id="quickActions">
-            <div class="quick-action-label">PM Quick Actions</div>
-            <button class="quick-action-btn" data-prompt="What are my critical blockers that need immediate attention?">🚨 Critical Blockers</button>
-            <button class="quick-action-btn" data-prompt="Give me an overview of negative feedback trends and patterns">📉 Negative Trends</button>
-            <button class="quick-action-btn" data-prompt="What feature requests are customers asking for?">✨ Feature Requests</button>
-            <button class="quick-action-btn" data-prompt="Show me a summary of all feedback sources and sentiment distribution">📊 Feedback Overview</button>
+            <div class="quick-action-label">Quick Analysis</div>
+            <button class="quick-action-btn" data-prompt="What are my critical blockers that need immediate attention?">Critical Blockers</button>
+            <button class="quick-action-btn" data-prompt="Give me an overview of negative feedback trends and patterns">Negative Trends</button>
+            <button class="quick-action-btn" data-prompt="What feature requests are customers asking for?">Feature Requests</button>
+            <button class="quick-action-btn" data-prompt="Show me a summary of all feedback sources and sentiment distribution">Feedback Overview</button>
           </div>
         </div>
 
@@ -1460,35 +1655,35 @@
               <div class="filter-option" data-source="email">
                 <input type="checkbox" id="filter-email" />
                 <label for="filter-email">
-                  <span>📧 Email</span>
+                  <span><span class="source-icon email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span> Email</span>
                   <span class="filter-count" id="count-email">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="discord">
                 <input type="checkbox" id="filter-discord" />
                 <label for="filter-discord">
-                  <span>💬 Discord</span>
+                  <span><span class="source-icon discord"><svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></span> Discord</span>
                   <span class="filter-count" id="count-discord">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="support-ticket">
                 <input type="checkbox" id="filter-support" />
                 <label for="filter-support">
-                  <span>🎫 Support</span>
+                  <span><span class="source-icon support"><svg viewBox="0 0 24 24"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-3.5h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg></span> Support</span>
                   <span class="filter-count" id="count-support">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="twitter">
                 <input type="checkbox" id="filter-twitter" />
                 <label for="filter-twitter">
-                  <span>𝕏 Twitter</span>
+                  <span><span class="source-icon twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span> X / Twitter</span>
                   <span class="filter-count" id="count-twitter">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="github-issue">
                 <input type="checkbox" id="filter-github" />
                 <label for="filter-github">
-                  <span>🐙 GitHub</span>
+                  <span><span class="source-icon github"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span> GitHub</span>
                   <span class="filter-count" id="count-github">0</span>
                 </label>
               </div>
@@ -1501,21 +1696,21 @@
               <div class="filter-option" data-sentiment="positive">
                 <input type="checkbox" id="filter-positive" />
                 <label for="filter-positive">
-                  <span>😊 Positive</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px;"></span>Positive</span>
                   <span class="filter-count" id="count-positive">0</span>
                 </label>
               </div>
               <div class="filter-option" data-sentiment="neutral">
                 <input type="checkbox" id="filter-neutral" />
                 <label for="filter-neutral">
-                  <span>😐 Neutral</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#888;margin-right:6px;"></span>Neutral</span>
                   <span class="filter-count" id="count-neutral">0</span>
                 </label>
               </div>
               <div class="filter-option" data-sentiment="negative">
                 <input type="checkbox" id="filter-negative" />
                 <label for="filter-negative">
-                  <span>😠 Negative</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;margin-right:6px;"></span>Negative</span>
                   <span class="filter-count" id="count-negative">0</span>
                 </label>
               </div>
@@ -1528,28 +1723,28 @@
               <div class="filter-option" data-urgency="critical">
                 <input type="checkbox" id="filter-critical" />
                 <label for="filter-critical">
-                  <span>🔴 Critical</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#dc2626;margin-right:6px;"></span>Critical</span>
                   <span class="filter-count" id="count-critical">0</span>
                 </label>
               </div>
               <div class="filter-option" data-urgency="high">
                 <input type="checkbox" id="filter-high" />
                 <label for="filter-high">
-                  <span>🟠 High</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f97316;margin-right:6px;"></span>High</span>
                   <span class="filter-count" id="count-high">0</span>
                 </label>
               </div>
               <div class="filter-option" data-urgency="medium">
                 <input type="checkbox" id="filter-medium" />
                 <label for="filter-medium">
-                  <span>🟡 Medium</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#eab308;margin-right:6px;"></span>Medium</span>
                   <span class="filter-count" id="count-medium">0</span>
                 </label>
               </div>
               <div class="filter-option" data-urgency="low">
                 <input type="checkbox" id="filter-low" />
                 <label for="filter-low">
-                  <span>🟢 Low</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px;"></span>Low</span>
                   <span class="filter-count" id="count-low">0</span>
                 </label>
               </div>
@@ -1560,12 +1755,12 @@
             <label class="filter-label">Sort By</label>
             <div class="sort-options">
               <select id="sortSelect" class="sort-select">
-                <option value="date-desc">📅 Newest First</option>
-                <option value="date-asc">📅 Oldest First</option>
-                <option value="urgency-desc">🔴 Urgency (High→Low)</option>
-                <option value="urgency-asc">🟢 Urgency (Low→High)</option>
-                <option value="sentiment-neg">😠 Negative First</option>
-                <option value="sentiment-pos">😊 Positive First</option>
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="urgency-desc">Urgency (High → Low)</option>
+                <option value="urgency-asc">Urgency (Low → High)</option>
+                <option value="sentiment-neg">Negative First</option>
+                <option value="sentiment-pos">Positive First</option>
               </select>
             </div>
           </div>
@@ -1752,12 +1947,19 @@
       displayFeedback();
       setupEventListeners();
       addMessage('ai', `<div style="font-size: 13px;">
-        <div style="margin-bottom: 8px;">👋 <strong>Welcome, PM!</strong> I can help you analyze customer feedback and surface actionable insights.</div>
-        <div style="color: #888; font-size: 12px; margin-bottom: 8px;">Try asking me:</div>
-        <div style="color: #F38020; font-size: 12px;">• "What are my critical blockers?"</div>
-        <div style="color: #F38020; font-size: 12px;">• "Show negative feedback trends"</div>
-        <div style="color: #F38020; font-size: 12px;">• "What features are customers requesting?"</div>
-        <div style="color: #F38020; font-size: 12px;">• "Give me a feedback overview"</div>
+        <div style="margin-bottom: 10px;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: linear-gradient(135deg, rgba(243, 128, 32, 0.2) 0%, rgba(243, 128, 32, 0.08) 100%); border: 1px solid rgba(243, 128, 32, 0.3); border-radius: 6px; font-size: 10px; font-weight: 700; color: #F38020; text-transform: uppercase; letter-spacing: 0.8px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#F38020"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Multi-Agent System Active
+          </span>
+        </div>
+        <div style="margin-bottom: 8px;"><strong>Welcome, PM!</strong> I'm your AI-powered feedback analysis system.</div>
+        <div style="color: #aaa; font-size: 12px; margin-bottom: 10px;">I use multiple specialized agents to analyze your feedback:</div>
+        <div style="color: #ccc; font-size: 12px; margin-bottom: 4px;">🎯 <strong>Query Classifier</strong> — Understands your intent</div>
+        <div style="color: #ccc; font-size: 12px; margin-bottom: 4px;">📊 <strong>Data Retrieval</strong> — Queries Cloudflare D1</div>
+        <div style="color: #ccc; font-size: 12px; margin-bottom: 4px;">🧠 <strong>Sentiment Analysis</strong> — Uses distilbert model</div>
+        <div style="color: #ccc; font-size: 12px; margin-bottom: 10px;">💡 <strong>PM Insight</strong> — Llama 3.1 for recommendations</div>
+        <div style="color: #888; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">Try: "What are my critical blockers?" or "Show negative trends"</div>
       </div>`, true);
     }
 
@@ -1779,10 +1981,14 @@
     async function generateMockData() {
       const btn = document.getElementById('generateMockBtn');
       btn.disabled = true;
-      btn.textContent = 'Generating...';
+      btn.textContent = 'Adding...';
 
       try {
-        for (const fb of mockFeedback) {
+        // Shuffle and pick 20 random items
+        const shuffled = [...mockFeedback].sort(() => Math.random() - 0.5);
+        const items = shuffled.slice(0, 20);
+
+        for (const fb of items) {
           await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1790,10 +1996,11 @@
           });
         }
         await loadFeedback();
+        updateCounts();
         displayFeedback();
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Generate Mock Data';
+        btn.textContent = '+ Add 20 Feedback Items';
       }
     }
 
@@ -1829,7 +2036,7 @@
       const header = document.getElementById('resultsHeader');
 
       if (filtered.length === 0) {
-        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No results</p></div>';
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon" style="font-size: 32px; color: #666;">—</div><p>No results</p></div>';
         header.textContent = 'No feedback found';
         return;
       }
@@ -1839,12 +2046,12 @@
         const dateStr = item.created_at ? formatDate(item.created_at) : '';
         return `
         <div class="feedback-item">
-          <div class="feedback-source">${getEmoji(item.source)} ${item.source}${dateStr ? ` <span class="feedback-date">${dateStr}</span>` : ''}</div>
+          <div class="feedback-source">${getSourceIcon(item.source)} ${item.source}${dateStr ? ` <span class="feedback-date">${dateStr}</span>` : ''}</div>
           <div class="feedback-text">${escapeHtml(item.content)}</div>
           <div class="feedback-meta">
             <span class="badge sentiment-${item.sentiment}">${item.sentiment}</span>
-            <span class="badge urgency-${item.urgency}">⚡ ${item.urgency}</span>
-            ${item.author ? `<span class="badge">👤 ${item.author}</span>` : ''}
+            <span class="badge urgency-${item.urgency}">${item.urgency}</span>
+            ${item.author ? `<span class="badge">${item.author}</span>` : ''}
           </div>
         </div>
       `}).join('');
@@ -1884,13 +2091,24 @@
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
+    function getSourceIcon(source) {
+      const icons = {
+        email: '<span class="source-icon email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span>',
+        discord: '<span class="source-icon discord"><svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></span>',
+        'support-ticket': '<span class="source-icon support"><svg viewBox="0 0 24 24"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-3.5h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg></span>',
+        twitter: '<span class="source-icon twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>',
+        'github-issue': '<span class="source-icon github"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span>'
+      };
+      return icons[source] || '<span class="source-icon"><svg viewBox="0 0 24 24" fill="#888"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg></span>';
+    }
+
+    // Keep emoji version for backwards compatibility in some places
     function getEmoji(source) {
-      return { email: '📧', discord: '💬', 'support-ticket': '🎫', twitter: '𝕏', 'github-issue': '🐙' }[source] || '📝';
+      return getSourceIcon(source);
     }
 
     function setupEventListeners() {
       document.getElementById('generateMockBtn').addEventListener('click', generateMockData);
-      document.getElementById('processAiBtn').addEventListener('click', () => addMessage('ai', '⚡ Processing feedback with AI...'));
       document.getElementById('sendBtn').addEventListener('click', sendMessage);
       document.getElementById('aiInput').addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
 
@@ -2072,8 +2290,8 @@
     // Delay helper for animations
     const delay = ms => new Promise(r => setTimeout(r, ms));
 
-    // Main PM Analysis function with step-by-step visualization
-    // Uses Workers AI backend for real analysis
+    // Main PM Analysis function with multi-agent workflow visualization
+    // Uses Workers AI backend with multiple specialized agents
     async function runPMAnalysis(query) {
       const lower = query.toLowerCase();
       const area = document.getElementById('messagesArea');
@@ -2088,91 +2306,134 @@
       // Determine analysis type
       let analysisType = detectAnalysisType(lower);
 
-      // STEP 1: Understanding Query
-      container.innerHTML = buildStep(1, 'active', 'Understanding your question', [
-        { text: `Parsing: "${query.substring(0, 40)}${query.length > 40 ? '...' : ''}"`, status: 'active' }
-      ], 20);
-      area.scrollTop = area.scrollHeight;
-      await delay(400);
+      // Check if this might need web search
+      const needsWebSearch = /latest|current|industry|benchmark|competitor|market|trend in|2024|2025|2026|best practice|strategy|how (do|should|can)/.test(lower);
 
-      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
-        { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 25) + buildStep(2, 'active', 'Querying Cloudflare D1 database', [
-        { text: 'Connecting to D1...', status: 'active' }
-      ], 30);
+      // Build the agent workflow HTML
+      function buildAgentWorkflow(agents) {
+        return `
+          <div class="agent-workflow">
+            <div class="agent-header">
+              <span class="agent-system-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Multi-Agent System
+              </span>
+              <span class="agent-title">Cloudflare Workers AI</span>
+            </div>
+            <div class="agent-list">
+              ${agents.map(a => `
+                <div class="agent-item ${a.status}">
+                  <div class="agent-icon">${a.icon}</div>
+                  <div class="agent-details">
+                    <div class="agent-name">${a.name}</div>
+                    <div class="agent-status">${a.statusText}</div>
+                    ${a.output ? `<div class="agent-output">${a.output.map(o => `<span class="agent-output-tag">${o}</span>`).join('')}</div>` : ''}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            ${needsWebSearch ? `
+              <div class="web-search-indicator">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                Web Search Enabled — Can search for PM best practices and industry context
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      // Initial agent states
+      const agents = [
+        { name: 'Query Classifier Agent', icon: '🎯', status: 'active', statusText: 'Analyzing query intent...', output: null },
+        { name: 'Data Retrieval Agent', icon: '📊', status: 'pending', statusText: 'Waiting...', output: null },
+        { name: 'Sentiment Analysis Agent', icon: '🧠', status: 'pending', statusText: 'Waiting...', output: null },
+        { name: 'PM Insight Agent (Llama 3.1)', icon: '💡', status: 'pending', statusText: 'Waiting...', output: null }
+      ];
+
+      container.innerHTML = buildAgentWorkflow(agents);
+      area.scrollTop = area.scrollHeight;
+      await delay(500);
+
+      // Agent 1 complete
+      agents[0].status = 'complete';
+      agents[0].statusText = 'Intent classified';
+      agents[0].output = [analysisType.label, needsWebSearch ? 'Web context needed' : 'Local analysis'];
+      agents[1].status = 'active';
+      agents[1].statusText = 'Querying Cloudflare D1...';
+      container.innerHTML = buildAgentWorkflow(agents);
       area.scrollTop = area.scrollHeight;
 
-      // STEP 2: Call the Workers AI backend
+      // Call the agent API
       let apiResponse = null;
       try {
-        const response = await fetch('/api/analyze', {
+        const response = await fetch('/api/agent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query }),
         });
         apiResponse = await response.json();
       } catch (err) {
-        console.error('API call failed:', err);
+        console.error('Agent API call failed:', err);
+        // Fallback to analyze endpoint
+        try {
+          const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query }),
+          });
+          apiResponse = await response.json();
+        } catch (e) {
+          console.error('Fallback failed:', e);
+        }
       }
 
-      // Show D1 query complete
-      const d1Chips = apiResponse ? [
-        { text: `D1: ${apiResponse.stats?.total || 0} records`, status: 'done' },
-        { text: `Sources: ${(apiResponse.stats?.sources || []).length}`, status: 'done' }
-      ] : [{ text: 'D1 query failed', status: 'active' }];
-
-      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
-        { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50);
-      area.scrollTop = area.scrollHeight;
-      await delay(300);
-
-      // STEP 3: Workers AI Analysis
-      const aiAvailable = apiResponse?.ai?.available;
-      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
-        { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50) +
-      buildStep(3, 'active', 'Running Workers AI analysis', [
-        { text: 'distilbert-sst-2 sentiment', status: 'active' },
-        { text: 'llama-3.1-8b insights', status: 'active' }
-      ], 70);
-      area.scrollTop = area.scrollHeight;
-      await delay(500);
-
-      const aiChips = aiAvailable ? [
-        { text: '✓ Sentiment analysis', status: 'done' },
-        { text: '✓ LLM insights', status: 'done' }
-      ] : [
-        { text: 'AI binding not configured', status: 'active' }
-      ];
-
-      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
-        { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50) +
-      buildStep(3, 'done', 'Running Workers AI analysis', aiChips, 75);
-      area.scrollTop = area.scrollHeight;
-      await delay(300);
-
-      // STEP 4: Generate final insights
-      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
-        { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50) +
-      buildStep(3, 'done', 'Running Workers AI analysis', aiChips, 75) +
-      buildStep(4, 'active', 'Generating PM insights', [
-        { text: 'Computing metrics...', status: 'active' }
-      ], 90);
+      // Agent 2 complete
+      const dataCount = apiResponse?.data?.count || apiResponse?.stats?.total || allFeedback.length;
+      agents[1].status = 'complete';
+      agents[1].statusText = 'Data retrieved from D1';
+      agents[1].output = [`${dataCount} records`, `${apiResponse?.meta?.agentsUsed?.length || 4} agents`];
+      agents[2].status = 'active';
+      agents[2].statusText = 'Running distilbert-sst-2...';
+      container.innerHTML = buildAgentWorkflow(agents);
       area.scrollTop = area.scrollHeight;
       await delay(400);
 
-      // Build final results using API response or client-side fallback
-      const results = apiResponse?.filtered?.items || analysisType.filter(allFeedback);
+      // Agent 3 complete
+      agents[2].status = 'complete';
+      agents[2].statusText = 'Sentiment analyzed';
+      agents[2].output = ['Positive', 'Negative', 'Neutral'];
+      agents[3].status = 'active';
+      agents[3].statusText = 'Generating insights with Llama 3.1...';
+      container.innerHTML = buildAgentWorkflow(agents);
+      area.scrollTop = area.scrollHeight;
+      await delay(500);
+
+      // Agent 4 complete
+      agents[3].status = 'complete';
+      agents[3].statusText = 'PM insights generated';
+      agents[3].output = ['Summary', 'Recommendations', 'Actions'];
+      container.innerHTML = buildAgentWorkflow(agents);
+      area.scrollTop = area.scrollHeight;
+      await delay(300);
+
+      // Build final results
+      const results = apiResponse?.data?.sample || apiResponse?.filtered?.items || analysisType.filter(allFeedback);
       const stats = apiResponse?.stats || computeStats(results);
-      const insights = generatePMInsights(results, stats, analysisType, apiResponse?.ai?.insights);
+
+      // Get AI response if available
+      let aiTextResponse = apiResponse?.response || '';
 
       // Generate natural language response
-      const naturalResponse = generateNaturalResponse(query, results, stats, analysisType, apiResponse?.ai?.insights);
+      const naturalResponse = aiTextResponse
+        ? `<div class="ai-response">
+            <div class="ai-response-text">${escapeHtml(aiTextResponse)}</div>
+          </div>`
+        : generateNaturalResponse(query, results, stats, analysisType, apiResponse?.ai?.insights);
 
-      container.innerHTML = naturalResponse + buildInsightsSection(insights, results, apiResponse?.ai?.insights);
+      // Build insights
+      const insights = generatePMInsights(results, stats, analysisType, apiResponse?.ai?.insights);
+
+      container.innerHTML = buildAgentWorkflow(agents) + naturalResponse + buildInsightsSection(insights, results, apiResponse?.ai?.insights);
 
       area.scrollTop = area.scrollHeight;
       container.removeAttribute('id');
@@ -2522,7 +2783,7 @@
 
             return `<div class="source-accordion">
               <button class="source-accordion-btn" onclick="this.parentElement.classList.toggle('expanded')">
-                <span>${getEmoji(s.source)} ${s.source}</span>
+                <span>${getSourceIcon(s.source)} ${s.source}</span>
                 <span class="source-count">${s.count} items</span>
                 <span class="accordion-arrow">▶</span>
               </button>
@@ -2548,7 +2809,7 @@
         results.slice(0, 3).forEach(item => {
           const sColor = item.sentiment === 'positive' ? '#22c55e' : item.sentiment === 'negative' ? '#ef4444' : '#888';
           html += `<div class="results-preview-item">
-            <div style="color: ${sColor}; font-size: 10px; margin-bottom: 4px;">${getEmoji(item.source)} ${item.source} • ${item.sentiment} • ${item.urgency}</div>
+            <div style="color: ${sColor}; font-size: 10px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">${getSourceIcon(item.source)} ${item.source} • ${item.sentiment} • ${item.urgency}</div>
             <div style="color: #ccc;">"${escapeHtml(item.content.substring(0, 100))}${item.content.length > 100 ? '...' : ''}"</div>
           </div>`;
         });

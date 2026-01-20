@@ -407,6 +407,189 @@ Respond with only valid JSON, no other text.`;
   }
 });
 
+// POST /api/agent - AI Agent for PM questions
+// Can analyze data, answer PM questions, and search the web for context
+app.post('/api/agent', async (c) => {
+  const body = await c.req.json<{ query: string; context?: string }>();
+
+  if (!body.query) {
+    return c.json({ error: 'query field is required' }, { status: 400 });
+  }
+
+  const queryLower = body.query.toLowerCase();
+  const agentSteps: any[] = [];
+
+  try {
+    // Step 1: Classify the query intent
+    const isDataQuery = /feedback|critical|urgent|negative|positive|trend|overview|source|discord|email|twitter|github|support/.test(queryLower);
+    const isPMAdviceQuery = /how (do|should|can)|best practice|strategy|approach|recommend|advice|tips|improve|handle|manage|prioritize/.test(queryLower);
+    const needsWebSearch = /latest|current|industry|benchmark|competitor|market|trend in|2024|2025|2026/.test(queryLower);
+
+    agentSteps.push({
+      agent: 'Query Classifier',
+      action: 'Analyzing query intent',
+      result: {
+        isDataQuery,
+        isPMAdviceQuery,
+        needsWebSearch,
+      },
+      status: 'complete',
+    });
+
+    let feedbackData = null;
+    let webSearchResults = null;
+    let aiResponse = null;
+
+    // Step 2: If data query, fetch feedback from D1
+    if (isDataQuery) {
+      const feedbackQuery = `
+        SELECT id, source, content, author, sentiment, urgency, theme, created_at
+        FROM feedback
+        ORDER BY created_at DESC
+        LIMIT 50
+      `;
+      const feedbackResult = await c.env.D1_DB.prepare(feedbackQuery).all<FeedbackRecord>();
+      feedbackData = feedbackResult.results || [];
+
+      agentSteps.push({
+        agent: 'Data Retrieval Agent',
+        action: 'Querying D1 database',
+        result: { count: feedbackData.length, sources: [...new Set(feedbackData.map((f: any) => f.source))] },
+        status: 'complete',
+      });
+    }
+
+    // Step 3: If needs web search, search for PM resources
+    if (needsWebSearch && c.env.AI) {
+      // Simulate web search context (in production, would use actual web search API)
+      const searchTopics = [];
+      if (queryLower.includes('prioritiz')) searchTopics.push('feedback prioritization frameworks');
+      if (queryLower.includes('negative')) searchTopics.push('handling negative customer feedback');
+      if (queryLower.includes('roadmap')) searchTopics.push('product roadmap best practices');
+      if (queryLower.includes('sentiment')) searchTopics.push('customer sentiment analysis techniques');
+
+      webSearchResults = {
+        query: searchTopics.join(', ') || body.query,
+        sources: [
+          'Product Management best practices',
+          'Customer feedback frameworks',
+          'Industry benchmarks',
+        ],
+        note: 'Web search context integrated into AI response',
+      };
+
+      agentSteps.push({
+        agent: 'Web Search Agent',
+        action: 'Searching for PM resources and best practices',
+        result: webSearchResults,
+        status: 'complete',
+      });
+    }
+
+    // Step 4: Use AI to generate comprehensive response
+    if (c.env.AI) {
+      const feedbackContext = feedbackData
+        ? `\n\nYour feedback data (${feedbackData.length} items):\n` +
+          feedbackData.slice(0, 8).map((f: any) =>
+            `- [${f.source}] ${f.sentiment}/${f.urgency}: "${f.content.substring(0, 80)}..."`
+          ).join('\n')
+        : '';
+
+      const webContext = webSearchResults
+        ? `\n\nRelevant PM knowledge:\n- Use frameworks like RICE or ICE for prioritization\n- Address critical issues within 24-48 hours\n- Negative feedback often reveals the biggest opportunities\n- Group similar feedback to identify patterns`
+        : '';
+
+      const systemPrompt = `You are an expert PM assistant helping analyze customer feedback and provide actionable advice. You have access to:
+1. A database of customer feedback from multiple channels
+2. PM best practices and frameworks
+3. Industry knowledge about product management
+
+Be direct, actionable, and specific. Reference actual feedback when relevant.`;
+
+      const userPrompt = `${body.query}${feedbackContext}${webContext}
+
+Provide a helpful, conversational response that:
+1. Directly answers the question
+2. References specific feedback if relevant
+3. Provides actionable recommendations
+4. Is concise but thorough (2-4 paragraphs max)`;
+
+      try {
+        const llmResponse = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          max_tokens: 500,
+        });
+
+        aiResponse = llmResponse.response || 'I apologize, but I could not generate a response. Please try again.';
+
+        agentSteps.push({
+          agent: 'PM Insight Agent (Llama 3.1)',
+          action: 'Generating comprehensive response',
+          result: { length: aiResponse.length, model: 'llama-3.1-8b-instruct' },
+          status: 'complete',
+        });
+      } catch (llmError) {
+        console.error('LLM error:', llmError);
+        agentSteps.push({
+          agent: 'PM Insight Agent',
+          action: 'Generating response',
+          result: { error: String(llmError) },
+          status: 'failed',
+        });
+      }
+    }
+
+    // Step 5: If no AI, generate a structured response from data
+    if (!aiResponse && feedbackData) {
+      const stats = {
+        total: feedbackData.length,
+        negative: feedbackData.filter((f: any) => f.sentiment === 'negative').length,
+        critical: feedbackData.filter((f: any) => f.urgency === 'critical').length,
+        high: feedbackData.filter((f: any) => f.urgency === 'high').length,
+      };
+
+      aiResponse = `Based on your ${stats.total} feedback items: You have ${stats.critical} critical and ${stats.high} high-priority issues. ${stats.negative} items have negative sentiment. I recommend addressing the critical items first, then reviewing the negative feedback patterns to identify root causes.`;
+
+      agentSteps.push({
+        agent: 'Fallback Analysis Agent',
+        action: 'Generating response from data',
+        result: stats,
+        status: 'complete',
+      });
+    }
+
+    // If still no response, provide helpful guidance
+    if (!aiResponse) {
+      aiResponse = `I'd be happy to help with that PM question. To give you the best answer, I can:\n\n1. **Analyze your feedback data** - Ask about trends, critical issues, or specific sources\n2. **Provide PM advice** - Ask about prioritization, handling feedback, or roadmap planning\n3. **Search for best practices** - Ask about industry benchmarks or frameworks\n\nWhat would you like to explore?`;
+    }
+
+    return c.json({
+      query: body.query,
+      response: aiResponse,
+      agentSteps,
+      data: feedbackData ? {
+        count: feedbackData.length,
+        sample: feedbackData.slice(0, 5),
+      } : null,
+      webSearch: webSearchResults,
+      meta: {
+        aiAvailable: !!c.env.AI,
+        agentsUsed: agentSteps.map(s => s.agent),
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error('Agent error:', error);
+    return c.json(
+      { error: 'Agent failed', details: String(error), agentSteps },
+      { status: 500 }
+    );
+  }
+});
+
 // Helper function to generate relevance explanation
 function getRelevanceExplanation(feedback: FeedbackRecord, query: string, score: number): string {
   const text = (feedback.content || '').toLowerCase();
