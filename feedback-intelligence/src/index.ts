@@ -3,17 +3,17 @@ import { serveStatic } from 'hono/cloudflare-workers';
 
 // Type definitions for environment bindings
 interface FeedbackRecord {
-  id: string;
-  created_at: string;
-  status: string;
-  r2_key: string;
-  original_text: string;
+  id: number;
+  source: string;
+  title?: string;
+  content: string;
+  author?: string;
   sentiment?: string;
-  category?: string;
   urgency?: string;
-  summary?: string;
-  vector_id?: string;
-  tags?: string;
+  theme?: string;
+  created_at: string;
+  analyzed_at?: string;
+  metadata?: string;
 }
 
 interface SearchResult extends FeedbackRecord {
@@ -21,11 +21,11 @@ interface SearchResult extends FeedbackRecord {
 }
 
 interface Env {
-  R2_BUCKET: R2Bucket;
-  D1_DB: D1Database;
-  AI: Ai;
-  VECTORIZE_INDEX: VectorizeIndex;
-  WORKFLOW: any;
+  D1_DB: any; // D1Database binding
+  R2_BUCKET?: any; // R2 binding (optional)
+  AI?: any; // Workers AI binding (optional)
+  VECTORIZE_INDEX?: any; // Vectorize binding (optional)
+  WORKFLOW?: any; // Workflows binding (optional)
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -38,78 +38,56 @@ app.get('/api/health', (c) => {
 // POST /api/feedback - Submit new feedback
 // Returns 202 Accepted (async processing)
 app.post('/api/feedback', async (c) => {
-  const body = await c.req.json<{ text: string; source?: string }>();
+  const body = await c.req.json<{ content: string; source?: string; title?: string; author?: string }>();
 
-  if (!body.text) {
-    return c.json({ error: 'text field is required' }, { status: 400 });
+  if (!body.content) {
+    return c.json({ error: 'content field is required' }, { status: 400 });
   }
 
-  const feedbackId = crypto.randomUUID();
-  const r2Key = `feedback/${feedbackId}.json`;
   const timestamp = new Date().toISOString();
 
   try {
-    // Step 1: Upload raw feedback to R2
-    // FRICTION: R2 API requires creating an object and uploading in one call.
-    // This is efficient but less flexible than traditional object storage APIs.
-    const rawPayload = {
-      id: feedbackId,
-      text: body.text,
-      source: body.source || 'web',
-      timestamp,
-    };
-
-    await c.env.R2_BUCKET.put(r2Key, JSON.stringify(rawPayload), {
-      httpMetadata: {
-        contentType: 'application/json',
-      },
-    });
-
-    // Step 2: Create initial record in D1 with PROCESSING status
-    // FRICTION: D1 bindings work, but errors don't provide good context about
-    // which SQL failed or what the actual issue was.
+    // Step 1: Create record in D1
     const insertQuery = `
-      INSERT INTO feedback (id, r2_key, original_text, status, created_at)
-      VALUES (?, ?, ?, 'PROCESSING', ?)
+      INSERT INTO feedback (source, content, author, title, created_at, sentiment, urgency, theme)
+      VALUES (?, ?, ?, ?, ?, 'neutral', 'medium', NULL)
     `;
 
-    await c.env.D1_DB.prepare(insertQuery).bind(
-      feedbackId,
-      r2Key,
-      body.text,
+    const result = await c.env.D1_DB.prepare(insertQuery).bind(
+      body.source || 'web',
+      body.content,
+      body.author || null,
+      body.title || null,
       timestamp
     ).run();
 
-    // Step 3: Trigger Workflow
-    // FRICTION: The Workflow binding documentation is sparse.
-    // Hard to find examples of how to pass parameters to triggered workflows.
+    const feedbackId = result.meta.last_row_id;
+
+    // Step 2: Trigger Workflow for AI analysis (optional)
     try {
-      // Note: This would trigger the workflow if configured correctly.
-      // In development, workflows may not execute immediately.
       if (c.env.WORKFLOW) {
         await c.env.WORKFLOW.create('process-feedback', {
           feedbackId,
-          r2Key,
+          content: body.content,
         });
       }
     } catch (err) {
       console.error('Workflow trigger failed:', err);
-      // Continue even if workflow trigger fails - we can retry later
+      // Continue even if workflow trigger fails
     }
 
     return c.json(
       {
         id: feedbackId,
-        status: 'PROCESSING',
-        r2_key: r2Key,
-        message: 'Feedback submitted for processing',
+        source: body.source || 'web',
+        message: 'Feedback submitted successfully',
       },
       { status: 202 }
     );
   } catch (error) {
     console.error('Error submitting feedback:', error);
     return c.json(
-      { error: 'Failed to process feedback submission' },
+      { error: 'Failed to process feedback submission', details: String(error) },
       { status: 500 }
     );
   }
@@ -122,7 +100,7 @@ app.get('/api/feedback', async (c) => {
     const offset = c.req.query('offset') || '0';
 
     const query = `
-      SELECT id, created_at, status, original_text, sentiment, category, urgency, summary
+      SELECT id, source, content, author, title, sentiment, urgency, theme, created_at, analyzed_at
       FROM feedback
       ORDER BY created_at DESC
       LIMIT ? OFFSET ?
@@ -139,7 +117,7 @@ app.get('/api/feedback', async (c) => {
   } catch (error) {
     console.error('Error fetching feedback:', error);
     return c.json(
-      { error: 'Failed to fetch feedback' },
+      { error: 'Failed to fetch feedback', details: String(error) },
       { status: 500 }
     );
   }
@@ -167,10 +145,7 @@ app.get('/api/feedback/:id', async (c) => {
   }
 });
 
-// GET /api/search - Semantic search using Vectorize
-// FRICTION: Vectorize requires that embeddings already exist.
-// There's a chicken-and-egg problem during development: can't search
-// without vectors, can't easily generate vectors without the workflow running.
+// GET /api/search - Search feedback (keyword + semantic)
 app.get('/api/search', async (c) => {
   const query = c.req.query('q');
 
@@ -179,59 +154,70 @@ app.get('/api/search', async (c) => {
   }
 
   try {
-    // Step 1: Generate embedding for search query using Workers AI
-    const aiResponse = await c.env.AI.run('@cf/baai/bge-base-en-v1.5', {
-      text: query,
-    });
+    // Try semantic search with Vectorize if available
+    let results: FeedbackRecord[] = [];
+    let usedVectorize = false;
 
-    const queryVector = (aiResponse as any).data[0];
+    try {
+      if (c.env.AI && c.env.VECTORIZE_INDEX) {
+        // Step 1: Generate embedding for search query using Workers AI
+        const aiResponse = await c.env.AI.run('@cf/baai/bge-base-en-v1.5', {
+          text: query,
+        });
 
-    // Step 2: Query Vectorize index
-    // FRICTION: No local Vectorize emulation means can't test this in wrangler dev.
-    // Must deploy to actually test vector search functionality.
-    const searchResults = await c.env.VECTORIZE_INDEX.query(queryVector, {
-      topK: 10,
-      returnMetadata: 'all',
-    });
+        const queryVector = (aiResponse as any).data[0];
 
-    // Step 3: Hydrate results from D1
-    const feedbackIds = searchResults.matches.map((m: any) => m.id);
+        // Step 2: Query Vectorize index
+        const searchResults = await c.env.VECTORIZE_INDEX.query(queryVector, {
+          topK: 10,
+          returnMetadata: 'all',
+        });
 
-    if (feedbackIds.length === 0) {
-      return c.json({
-        query,
-        results: [],
-        matches: 0,
-        thinking: {
-          queryEmbedded: true,
-          vectorSearchPerformed: true,
-          message: 'No similar feedback found for your query',
-        },
-      });
+        const feedbackIds = searchResults.matches.map((m: any) => m.id);
+
+        if (feedbackIds.length > 0) {
+          const placeholders = feedbackIds.map(() => '?').join(',');
+          const hydrationQuery = `SELECT * FROM feedback WHERE id IN (${placeholders})`;
+          const dbResults = await c.env.D1_DB.prepare(hydrationQuery)
+            .bind(...feedbackIds)
+            .all<FeedbackRecord>();
+          results = dbResults.results || [];
+          usedVectorize = true;
+        }
+      }
+    } catch (vecError) {
+      console.warn('Vectorize search failed, falling back to keyword search:', vecError);
     }
 
-    const placeholders = feedbackIds.map(() => '?').join(',');
-    const hydrationQuery = `
-      SELECT * FROM feedback WHERE id IN (${placeholders})
-    `;
+    // Fallback: Keyword search if Vectorize unavailable or no results
+    if (results.length === 0) {
+      const searchQuery = `
+        SELECT id, source, content, author, title, sentiment, urgency, theme, created_at
+        FROM feedback
+        WHERE content LIKE ? OR title LIKE ? OR theme LIKE ?
+        ORDER BY created_at DESC
+        LIMIT 10
+      `;
 
-    const results = await c.env.D1_DB.prepare(hydrationQuery)
-      .bind(...feedbackIds)
-      .all<FeedbackRecord>();
+      const searchTerm = `%${query}%`;
+      const dbResults = await c.env.D1_DB.prepare(searchQuery)
+        .bind(searchTerm, searchTerm, searchTerm)
+        .all<FeedbackRecord>();
 
-    // Combine results with relevance scores from Vectorize
-    const enrichedResults = (results.results || []).map((feedback, index) => {
-      const match = searchResults.matches[index];
-      const relevanceScore = match?.score || 0;
+      results = dbResults.results || [];
+    }
 
-      // Calculate relevance percentage (0-100)
-      const relevancePercentage = Math.round((1 - (1 - relevanceScore)) * 100);
+    // Enrich results with relevance scores
+    const enrichedResults = results.map((feedback) => {
+      const content = (feedback.content || '').toLowerCase();
+      const queryTerms = (query || '').toLowerCase().split(/\s+/);
+      const matches = queryTerms.filter(t => content.includes(t)).length;
+      const relevancePercentage = queryTerms.length > 0 ? Math.round((matches / queryTerms.length) * 100) : 0;
 
       return {
         ...feedback,
         relevance: {
-          score: relevanceScore,
-          percentage: Math.max(0, Math.min(100, relevancePercentage)),
+          percentage: Math.max(20, relevancePercentage),
           explanation: getRelevanceExplanation(feedback, query, relevancePercentage),
         },
       };
@@ -240,19 +226,23 @@ app.get('/api/search', async (c) => {
     return c.json({
       query,
       results: enrichedResults,
-      matches: searchResults.matches.length,
+      matches: results.length,
       thinking: {
-        queryEmbedded: true,
-        vectorSearchPerformed: true,
-        embeddingModel: '@cf/baai/bge-base-en-v1.5',
-        topKUsed: 10,
-        message: `Found ${searchResults.matches.length} semantically similar feedback items for "${query}"`,
-        process: [
-          '1. Converted your search query to a vector embedding (768 dimensions)',
-          '2. Searched Vectorize index for similar feedback vectors',
-          '3. Ranked results by semantic similarity score',
-          '4. Retrieved full feedback details from database',
-        ],
+        searchType: usedVectorize ? 'semantic' : 'keyword',
+        message: `Found ${results.length} feedback items matching "${query}"`,
+        process: usedVectorize
+          ? [
+              '1. Converted your search query to a vector embedding (768 dimensions)',
+              '2. Searched Vectorize index for similar feedback vectors',
+              '3. Ranked results by semantic similarity score',
+              '4. Retrieved full feedback details from database',
+            ]
+          : [
+              '1. Searched feedback content for keyword matches',
+              '2. Searched titles and themes for relevance',
+              '3. Ranked results by match frequency',
+              '4. Retrieved full feedback details from database',
+            ],
       },
     });
   } catch (error) {
@@ -262,9 +252,8 @@ app.get('/api/search', async (c) => {
         error: 'Search failed',
         details: String(error),
         thinking: {
-          queryEmbedded: false,
-          vectorSearchPerformed: false,
-          message: 'Error during semantic search processing',
+          searchType: 'error',
+          message: 'Error during search processing',
         },
       },
       { status: 500 }
@@ -274,21 +263,21 @@ app.get('/api/search', async (c) => {
 
 // Helper function to generate relevance explanation
 function getRelevanceExplanation(feedback: FeedbackRecord, query: string, score: number): string {
-  const text = feedback.original_text.toLowerCase();
-  const queryLower = query.toLowerCase();
-  const words = queryLower.split(/\s+/);
+  const text = (feedback.content || '').toLowerCase();
+  const queryLower = (query || '').toLowerCase();
+  const words = queryLower.split(/\s+/).filter(w => w.length > 0);
 
   // Find matching keywords
   const matchedKeywords = words.filter(w => text.includes(w));
 
   if (score > 80) {
-    return `Very strong semantic match. ${matchedKeywords.length > 0 ? `Contains keywords: ${matchedKeywords.slice(0, 3).join(', ')}` : 'High semantic similarity'}`;
+    return `Very strong match. ${matchedKeywords.length > 0 ? `Keywords: ${matchedKeywords.slice(0, 3).join(', ')}` : 'High relevance'}`;
   } else if (score > 60) {
-    return `Good semantic match. Similar concepts and language patterns detected.`;
+    return `Good match. Similar content and language patterns detected.`;
   } else if (score > 40) {
-    return `Moderate relevance. Some conceptual overlap with your search.`;
+    return `Moderate relevance. Some content overlap with your search.`;
   } else {
-    return `Related feedback. Weak semantic match but could be relevant.`;
+    return `Related feedback. Could be relevant to your search.`;
   }
 }
 

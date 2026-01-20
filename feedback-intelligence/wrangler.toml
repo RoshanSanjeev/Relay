@@ -25,8 +25,8 @@ preview_bucket_name = "feedback-raw-dev"
 # via wrangler.toml - must use dashboard or local SQLite for development.
 [[d1_databases]]
 binding = "D1_DB"
-database_name = "feedback-warehouse"
-database_id = "mock-db-id"  # Replace with actual ID after creating in dashboard
+database_name = "feedback-db"
+database_id = "ec6a2e32-578d-4b96-8d14-a3a68613ce24"
 
 # Workers AI Binding
 # FRICTION: AI binding is simpler, but documentation doesn't show which models are available
