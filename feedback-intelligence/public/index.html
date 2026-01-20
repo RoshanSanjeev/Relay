@@ -1,9 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Feedback Intelligence Platform</title>
+  <title>Feedback Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <style>
     * {
       margin: 0;
@@ -11,312 +15,409 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background-color: #000000;
-      color: #ffffff;
+      background: #0f0f0f;
+      color: #e5e5e5;
       line-height: 1.6;
+      letter-spacing: -0.3px;
+      overflow: hidden;
+    }
+
+    /* Premium gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0d0d0d 100%);
+      z-index: -1;
+      pointer-events: none;
     }
 
     .app-container {
       display: flex;
       flex-direction: column;
       height: 100vh;
+      background: rgba(15, 15, 15, 0.5);
+      position: relative;
     }
 
-    /* Header */
+    /* ========== HEADER ========== */
     header {
-      background: #0a0a0a;
-      border-bottom: 1px solid #333333;
-      padding: 16px 24px;
+      background: rgba(10, 10, 10, 0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(243, 128, 32, 0.1);
+      padding: 20px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    header h1 {
-      font-size: 24px;
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #F38020, transparent);
+      opacity: 0.3;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-brand h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
       font-weight: 700;
       color: #F38020;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .header-brand p {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
     }
 
     .header-controls {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       align-items: center;
     }
 
-    .mock-data-info {
-      background: #1a1a1a;
-      border: 1px solid #333333;
-      border-radius: 6px;
-      padding: 8px 16px;
+    .mock-data-badge {
+      background: rgba(243, 128, 32, 0.08);
+      border: 1px solid rgba(243, 128, 32, 0.25);
+      padding: 10px 16px;
+      border-radius: 8px;
       font-size: 13px;
-      color: #999999;
+      color: #F38020;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
       gap: 8px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .mock-data-count {
-      color: #F38020;
-      font-weight: 600;
-      font-size: 14px;
+    .mock-data-badge:hover {
+      border-color: rgba(243, 128, 32, 0.5);
+      background: rgba(243, 128, 32, 0.12);
     }
 
     .button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      background: #F38020;
-      color: #000000;
+      padding: 12px 24px;
       border: none;
-      border-radius: 6px;
-      font-size: 14px;
+      border-radius: 8px;
+      font-size: 13px;
       font-weight: 600;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
     }
 
-    .button:hover {
-      background: #e67019;
-      transform: translateY(-1px);
+    .button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left 0.3s ease;
+      z-index: -1;
     }
 
-    .button:active {
-      transform: translateY(0);
+    .button:hover::before {
+      left: 100%;
+    }
+
+    .button.primary {
+      background: #F38020;
+      color: #000;
+      box-shadow: 0 8px 24px rgba(243, 128, 32, 0.2);
+    }
+
+    .button.primary:hover {
+      box-shadow: 0 12px 32px rgba(243, 128, 32, 0.3);
+      transform: translateY(-2px);
     }
 
     .button.secondary {
-      background: #333333;
-      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e5e5e5;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
     }
 
     .button.secondary:hover {
-      background: #444444;
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
-    .button.small {
-      padding: 8px 12px;
-      font-size: 12px;
-    }
-
-    /* Main content */
+    /* ========== CONTENT ========== */
     .content {
       display: flex;
       flex: 1;
       overflow: hidden;
+      gap: 0;
     }
 
-    /* Left panel - AI Search */
+    /* ========== LEFT PANEL - AI CHAT ========== */
     .left-panel {
-      flex: 1;
+      flex: 0 0 48%;
       display: flex;
       flex-direction: column;
-      border-right: 1px solid #333333;
-      background: #0a0a0a;
+      background: rgba(20, 20, 20, 0.4);
+      border-right: 1px solid rgba(243, 128, 32, 0.08);
+      position: relative;
+    }
+
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(243, 128, 32, 0.2), transparent);
+      pointer-events: none;
     }
 
     .panel-header {
-      padding: 16px;
-      border-bottom: 1px solid #333333;
-      background: #1a1a1a;
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: linear-gradient(to bottom, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.4));
     }
 
     .panel-header h2 {
-      font-size: 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
       font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 4px;
+      color: #fff;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
     }
 
-    .panel-subtitle {
+    .panel-header p {
       font-size: 12px;
-      color: #999999;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 500;
     }
 
-    .panel-content {
+    .chat-container {
       flex: 1;
       display: flex;
       flex-direction: column;
+      padding: 20px 28px;
       overflow-y: auto;
-      padding: 16px;
+      overflow-x: hidden;
     }
 
-    /* AI Search Section */
-    .ai-search-box {
+    .chat-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+      background: rgba(243, 128, 32, 0.2);
+      border-radius: 4px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(243, 128, 32, 0.4);
+    }
+
+    .messages-area {
+      flex: 1;
       display: flex;
-      gap: 12px;
+      flex-direction: column;
+      gap: 16px;
       margin-bottom: 24px;
     }
 
-    .ai-search-box input {
-      flex: 1;
-      padding: 12px 16px;
-      border: 1px solid #333333;
-      border-radius: 6px;
-      background: #1a1a1a;
-      color: #ffffff;
-      font-size: 14px;
-      transition: border-color 0.2s;
+    .message {
+      display: flex;
+      gap: 12px;
+      animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .ai-search-box input:focus {
-      outline: none;
-      border-color: #F38020;
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    /* Results */
-    .results-section {
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 85%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .message.ai .bubble {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #d5d5d5;
+      backdrop-filter: blur(10px);
+    }
+
+    .message.user .bubble {
+      background: #F38020;
+      color: #000;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      box-shadow: 0 4px 16px rgba(243, 128, 32, 0.2);
+    }
+
+    .quick-actions {
       display: flex;
       flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quick-action-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .quick-action-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(243, 128, 32, 0.15);
+      color: #d5d5d5;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .quick-action-btn:hover {
+      background: rgba(243, 128, 32, 0.1);
+      border-color: rgba(243, 128, 32, 0.35);
+      transform: translateX(4px);
+    }
+
+    .input-area {
+      padding: 20px 28px 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
       gap: 12px;
     }
 
-    .result-card {
-      background: #1a1a1a;
-      border: 1px solid #333333;
-      border-left: 3px solid #F38020;
-      border-radius: 6px;
-      padding: 16px;
-      transition: all 0.2s;
-    }
-
-    .result-card:hover {
-      border-color: #F38020;
-      background: #222222;
-    }
-
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 12px;
-    }
-
-    .result-title {
-      font-weight: 600;
-      font-size: 14px;
-      color: #e0e0e0;
+    .input-wrapper {
       flex: 1;
-    }
-
-    .result-relevance {
-      background: rgba(243, 128, 32, 0.1);
-      border: 1px solid rgba(243, 128, 32, 0.3);
-      border-radius: 4px;
-      padding: 4px 12px;
-      font-size: 12px;
-      color: #F38020;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .result-content {
-      font-size: 13px;
-      color: #cccccc;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .result-meta {
+      position: relative;
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 500;
-      background: #333333;
-      color: #999999;
     }
 
-    .badge.source-discord {
-      background: rgba(88, 101, 242, 0.15);
-      color: #5865F2;
-      border: 1px solid rgba(88, 101, 242, 0.3);
+    .input-wrapper input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      outline: none;
     }
 
-    .badge.source-email {
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.3);
+    .input-wrapper input::placeholder {
+      color: #666;
     }
 
-    .badge.source-support {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+    .input-wrapper input:focus {
+      border-color: rgba(243, 128, 32, 0.4);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 20px rgba(243, 128, 32, 0.1);
     }
 
-    .badge.source-twitter {
-      background: rgba(29, 155, 240, 0.15);
-      color: #1d9bf0;
-      border: 1px solid rgba(29, 155, 240, 0.3);
-    }
-
-    .badge.source-github {
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .badge.sentiment-positive {
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .badge.sentiment-negative {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #666666;
-    }
-
-    .empty-state-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    /* Right panel - Manual Filter */
+    /* ========== RIGHT PANEL - BROWSER ========== */
     .right-panel {
-      flex: 1;
+      flex: 0 0 52%;
       display: flex;
       flex-direction: column;
-      background: #0a0a0a;
+      background: rgba(15, 15, 15, 0.3);
+      position: relative;
     }
 
-    .filter-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+    .filters-container {
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: linear-gradient(to bottom, rgba(30, 30, 30, 0.5), rgba(20, 20, 20, 0.2));
+      max-height: 280px;
       overflow-y: auto;
     }
 
-    .filter-group {
-      padding: 16px;
-      border-bottom: 1px solid #333333;
+    .filters-container::-webkit-scrollbar {
+      width: 6px;
     }
 
-    .filter-title {
-      font-size: 12px;
-      font-weight: 600;
+    .filters-container::-webkit-scrollbar-thumb {
+      background: rgba(243, 128, 32, 0.2);
+      border-radius: 3px;
+    }
+
+    .filter-section {
+      margin-bottom: 24px;
+    }
+
+    .filter-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      color: #F38020;
       text-transform: uppercase;
-      color: #999999;
+      letter-spacing: 1.1px;
+      font-weight: 700;
       margin-bottom: 12px;
+      display: block;
     }
 
     .filter-options {
@@ -328,24 +429,26 @@
     .filter-option {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      background: #1a1a1a;
-      border: 1px solid #333333;
-      border-radius: 6px;
+      gap: 12px;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      user-select: none;
     }
 
     .filter-option:hover {
-      border-color: #F38020;
-      background: #222222;
+      background: rgba(243, 128, 32, 0.08);
+      border-color: rgba(243, 128, 32, 0.25);
+      transform: translateX(3px);
     }
 
     .filter-option input[type="checkbox"] {
-      cursor: pointer;
       width: 16px;
       height: 16px;
+      cursor: pointer;
       accent-color: #F38020;
     }
 
@@ -353,303 +456,301 @@
       flex: 1;
       cursor: pointer;
       font-size: 13px;
+      font-weight: 500;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
     }
 
     .filter-count {
-      font-size: 11px;
-      color: #666666;
-      margin-left: auto;
+      font-size: 12px;
+      color: #888;
+      font-weight: 500;
     }
 
-    .filter-option.active {
-      border-color: #F38020;
-      background: rgba(243, 128, 32, 0.1);
-    }
-
-    .filter-option.active input[type="checkbox"] {
-      accent-color: #F38020;
-    }
-
-    /* Results by category */
-    .category-results {
+    .results-container {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
       overflow-y: auto;
+      padding: 24px 28px;
     }
 
-    .category-results-header {
-      font-size: 12px;
+    .results-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .results-container::-webkit-scrollbar-thumb {
+      background: rgba(243, 128, 32, 0.2);
+      border-radius: 4px;
+    }
+
+    .results-header {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
       font-weight: 600;
       color: #F38020;
-      margin-bottom: 12px;
-      text-transform: uppercase;
+      margin-bottom: 16px;
+      letter-spacing: -0.3px;
     }
 
-    .category-feedback-list {
+    .feedback-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .category-item {
-      background: #1a1a1a;
-      border: 1px solid #333333;
-      border-radius: 6px;
-      padding: 12px;
-      font-size: 12px;
+    .feedback-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
     }
 
-    .category-item:hover {
-      border-color: #F38020;
-      background: #222222;
+    .feedback-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #F38020;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    .category-item-source {
-      font-size: 10px;
+    .feedback-item:hover {
+      background: rgba(243, 128, 32, 0.08);
+      border-color: rgba(243, 128, 32, 0.3);
+      transform: translateX(4px);
+    }
+
+    .feedback-item:hover::before {
+      opacity: 1;
+    }
+
+    .feedback-source {
+      font-size: 11px;
       color: #F38020;
-      font-weight: 600;
-      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
-    .category-item-text {
-      color: #cccccc;
-      line-height: 1.4;
+    .feedback-text {
+      font-size: 13px;
+      color: #d5d5d5;
+      line-height: 1.5;
+      margin-bottom: 10px;
     }
 
-    /* Loading state */
+    .feedback-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #aaa;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 500;
+    }
+
+    .badge.sentiment-positive {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+      border-color: rgba(34, 197, 94, 0.25);
+    }
+
+    .badge.sentiment-negative {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    /* ========== LOADING ========== */
     .spinner {
       display: inline-block;
       width: 14px;
       height: 14px;
-      border: 2px solid #333333;
+      border: 2px solid rgba(243, 128, 32, 0.2);
       border-top-color: #F38020;
       border-radius: 50%;
-      animation: spin 0.6s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
-    .loading-text {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #999999;
-      font-size: 13px;
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1200px) {
+      .left-panel {
+        flex: 0 0 45%;
+      }
+      .right-panel {
+        flex: 0 0 55%;
+      }
     }
 
-    /* Message states */
-    .message {
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
-
-    .message.success {
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .message.error {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    /* Chatbot styles */
-    .chat-message {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .chat-message.user {
-      justify-content: flex-end;
-    }
-
-    .chat-bubble {
-      max-width: 80%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .chat-message.ai .chat-bubble {
-      background: #1a1a1a;
-      border: 1px solid #333333;
-      color: #e0e0e0;
-    }
-
-    .chat-message.user .chat-bubble {
-      background: #F38020;
-      color: #000000;
-      font-weight: 500;
-    }
-
-    .quick-prompt-btn {
-      background: #1a1a1a;
-      color: #ffffff;
-      border: 1px solid #333333;
-      padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
-      white-space: normal;
-    }
-
-    .quick-prompt-btn:hover {
-      border-color: #F38020;
-      background: #222222;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       .content {
         flex-direction: column;
       }
 
-      .left-panel, .right-panel {
+      .left-panel {
+        flex: 0 0 50%;
         border-right: none;
-        border-bottom: 1px solid #333333;
+        border-bottom: 1px solid rgba(243, 128, 32, 0.08);
+      }
+
+      .right-panel {
+        flex: 0 0 50%;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="app-container">
-    <!-- Header -->
+    <!-- HEADER -->
     <header>
-      <h1>🔍 Feedback Intelligence</h1>
+      <div class="header-brand">
+        <h1>Feedback Intelligence</h1>
+        <p>AI-Powered Insights</p>
+      </div>
       <div class="header-controls">
-        <div class="mock-data-info">
-          <span>Mock Data:</span>
-          <span class="mock-data-count" id="mockDataCount">0 items</span>
+        <div class="mock-data-badge">
+          <span>📊</span>
+          <span id="mockDataCount">0 items</span>
         </div>
-        <button class="button secondary" id="generateMockBtn">📊 Generate Mock Data</button>
-        <button class="button" id="processAiBtn">⚡ Process with AI</button>
+        <button class="button secondary" id="generateMockBtn">Generate Mock Data</button>
+        <button class="button primary" id="processAiBtn">Process with AI</button>
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- CONTENT -->
     <div class="content">
-      <!-- Left Panel: AI Search -->
+      <!-- LEFT PANEL -->
       <div class="left-panel">
         <div class="panel-header">
-          <h2>💬 AI Assistant</h2>
-          <p class="panel-subtitle">Chat with AI about your feedback</p>
+          <h2>AI Assistant</h2>
+          <p>Ask Questions About Your Feedback</p>
         </div>
-        <div class="panel-content">
-          <div id="aiChat" style="display: flex; flex-direction: column; height: 100%;">
-            <!-- Chat messages -->
-            <div id="chatMessages" style="flex: 1; overflow-y: auto; margin-bottom: 16px; display: flex; flex-direction: column; gap: 12px;"></div>
 
-            <!-- Quick prompts -->
-            <div id="quickPrompts" style="margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px;">
-              <div style="font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 4px;">Quick Questions</div>
-              <button class="quick-prompt-btn" data-prompt="What are my critical feedback items?">🔴 Critical Feedback</button>
-              <button class="quick-prompt-btn" data-prompt="Show me negative feedback from today">😠 Negative Feedback</button>
-              <button class="quick-prompt-btn" data-prompt="What issues are from Discord?">💬 Discord Issues</button>
-              <button class="quick-prompt-btn" data-prompt="Summarize recent support tickets">🎫 Support Summary</button>
-            </div>
+        <div class="chat-container">
+          <div class="messages-area" id="messagesArea"></div>
 
-            <!-- Input -->
-            <div class="ai-search-box">
-              <input type="text" id="aiSearchInput" placeholder="Ask me anything about your feedback..." />
-              <button class="button small" id="aiSearchBtn">Send</button>
-            </div>
+          <div class="quick-actions" id="quickActions">
+            <div class="quick-action-label">Quick Actions</div>
+            <button class="quick-action-btn" data-prompt="What are my critical feedback items?">🔴 Critical Issues</button>
+            <button class="quick-action-btn" data-prompt="Show me negative feedback">😠 Negative Feedback</button>
+            <button class="quick-action-btn" data-prompt="What's coming from Discord?">💬 Discord Messages</button>
+            <button class="quick-action-btn" data-prompt="Summarize support tickets">🎫 Support Summary</button>
           </div>
+        </div>
+
+        <div class="input-area">
+          <div class="input-wrapper">
+            <input type="text" id="aiInput" placeholder="Ask about your feedback..." />
+          </div>
+          <button class="button primary" id="sendBtn" style="padding: 12px 20px;">Send</button>
         </div>
       </div>
 
-      <!-- Right Panel: Categorical Filter -->
+      <!-- RIGHT PANEL -->
       <div class="right-panel">
         <div class="panel-header">
-          <h2>📂 Browse by Source</h2>
-          <p class="panel-subtitle">Filter and explore categorized feedback</p>
+          <h2>Browse Feedback</h2>
+          <p>Filter by Source & Sentiment</p>
         </div>
 
-        <!-- Filters -->
-        <div class="filter-section">
-          <div class="filter-group">
-            <div class="filter-title">Source Type</div>
+        <div class="filters-container">
+          <div class="filter-section">
+            <label class="filter-label">Source</label>
             <div class="filter-options">
               <div class="filter-option active" data-source="all">
-                <input type="checkbox" id="source-all" checked />
-                <label for="source-all">
+                <input type="checkbox" id="filter-all" checked />
+                <label for="filter-all">
                   <span>All Sources</span>
                 </label>
               </div>
               <div class="filter-option" data-source="email">
-                <input type="checkbox" id="source-email" />
-                <label for="source-email">
+                <input type="checkbox" id="filter-email" />
+                <label for="filter-email">
                   <span>📧 Email</span>
                   <span class="filter-count" id="count-email">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="discord">
-                <input type="checkbox" id="source-discord" />
-                <label for="source-discord">
+                <input type="checkbox" id="filter-discord" />
+                <label for="filter-discord">
                   <span>💬 Discord</span>
                   <span class="filter-count" id="count-discord">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="support-ticket">
-                <input type="checkbox" id="source-support" />
-                <label for="source-support">
-                  <span>🎫 Support Ticket</span>
+                <input type="checkbox" id="filter-support" />
+                <label for="filter-support">
+                  <span>🎫 Support</span>
                   <span class="filter-count" id="count-support">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="twitter">
-                <input type="checkbox" id="source-twitter" />
-                <label for="source-twitter">
+                <input type="checkbox" id="filter-twitter" />
+                <label for="filter-twitter">
                   <span>𝕏 Twitter</span>
                   <span class="filter-count" id="count-twitter">0</span>
                 </label>
               </div>
               <div class="filter-option" data-source="github-issue">
-                <input type="checkbox" id="source-github" />
-                <label for="source-github">
-                  <span>🐙 GitHub Issues</span>
+                <input type="checkbox" id="filter-github" />
+                <label for="filter-github">
+                  <span>🐙 GitHub</span>
                   <span class="filter-count" id="count-github">0</span>
                 </label>
               </div>
             </div>
           </div>
 
-          <div class="filter-group">
-            <div class="filter-title">Sentiment</div>
+          <div class="filter-section">
+            <label class="filter-label">Sentiment</label>
             <div class="filter-options">
               <div class="filter-option" data-sentiment="positive">
-                <input type="checkbox" id="sentiment-positive" />
-                <label for="sentiment-positive">
+                <input type="checkbox" id="filter-positive" />
+                <label for="filter-positive">
                   <span>😊 Positive</span>
                   <span class="filter-count" id="count-positive">0</span>
                 </label>
               </div>
               <div class="filter-option" data-sentiment="neutral">
-                <input type="checkbox" id="sentiment-neutral" />
-                <label for="sentiment-neutral">
+                <input type="checkbox" id="filter-neutral" />
+                <label for="filter-neutral">
                   <span>😐 Neutral</span>
                   <span class="filter-count" id="count-neutral">0</span>
                 </label>
               </div>
               <div class="filter-option" data-sentiment="negative">
-                <input type="checkbox" id="sentiment-negative" />
-                <label for="sentiment-negative">
+                <input type="checkbox" id="filter-negative" />
+                <label for="filter-negative">
                   <span>😠 Negative</span>
                   <span class="filter-count" id="count-negative">0</span>
                 </label>
@@ -658,40 +759,38 @@
           </div>
         </div>
 
-        <!-- Filtered Results -->
-        <div class="category-results">
-          <div class="category-results-header" id="resultsHeader">Showing all feedback</div>
-          <div class="category-feedback-list" id="categoryResults"></div>
+        <div class="results-container">
+          <div class="results-header" id="resultsHeader">All Feedback</div>
+          <div class="feedback-list" id="feedbackList"></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Mock data generator
     const mockFeedback = [
-      { content: 'Login is completely broken, users cannot access their accounts', source: 'support-ticket', sentiment: 'negative', author: 'Support Team' },
-      { content: 'Love the new dashboard design! So much cleaner now', source: 'discord', sentiment: 'positive', author: 'User #123' },
-      { content: 'API documentation is outdated and missing examples', source: 'github-issue', sentiment: 'negative', author: 'Developer' },
-      { content: 'Great customer support, issue resolved within 2 hours', source: 'email', sentiment: 'positive', author: 'John D.' },
-      { content: 'Performance is really slow on the dashboard', source: 'twitter', sentiment: 'negative', author: '@feedback' },
-      { content: 'Would be great to have dark mode option', source: 'discord', sentiment: 'neutral', author: 'User #456' },
-      { content: 'Integration with Slack would be amazing', source: 'github-issue', sentiment: 'positive', author: 'Developer' },
-      { content: 'Pricing seems too high compared to competitors', source: 'email', sentiment: 'negative', author: 'Prospect' },
-      { content: 'The product works well for our team', source: 'support-ticket', sentiment: 'positive', author: 'Team Lead' },
-      { content: 'Mobile app crashes frequently', source: 'twitter', sentiment: 'negative', author: '@user' },
+      { content: 'Login completely broken, blocking all user access', source: 'support-ticket', sentiment: 'negative', author: 'Support' },
+      { content: 'New dashboard design is amazing, very intuitive', source: 'discord', sentiment: 'positive', author: 'User #234' },
+      { content: 'API docs are outdated and missing examples', source: 'github-issue', sentiment: 'negative', author: 'Dev' },
+      { content: 'Excellent customer support response time', source: 'email', sentiment: 'positive', author: 'Client' },
+      { content: 'Performance is slow during peak hours', source: 'twitter', sentiment: 'negative', author: '@feedback' },
+      { content: 'Would love dark mode support', source: 'discord', sentiment: 'neutral', author: 'User #567' },
+      { content: 'Slack integration would be powerful', source: 'github-issue', sentiment: 'positive', author: 'Engineer' },
+      { content: 'Pricing is higher than competitors', source: 'email', sentiment: 'negative', author: 'Prospect' },
+      { content: 'Works well for our enterprise needs', source: 'support-ticket', sentiment: 'positive', author: 'PM' },
+      { content: 'Mobile app crashes on startup', source: 'twitter', sentiment: 'negative', author: '@user' },
     ];
 
     let allFeedback = [];
     let selectedSources = new Set(['all']);
     let selectedSentiments = new Set();
 
-    // Initialize
     async function init() {
       await loadFeedback();
       updateCounts();
-      displayCategoryResults();
+      displayFeedback();
       setupEventListeners();
+      addMessage('ai', 'Welcome! Ask me about your feedback. Try "What are my critical issues?" or "Show negative feedback"');
     }
 
     async function loadFeedback() {
@@ -701,73 +800,48 @@
         allFeedback = data.data || [];
         updateMockDataCount();
       } catch (error) {
-        console.error('Failed to load feedback:', error);
-        allFeedback = [];
+        console.error('Failed to load:', error);
       }
     }
 
     function updateMockDataCount() {
-      const count = allFeedback.length;
-      document.getElementById('mockDataCount').textContent = `${count} items`;
+      document.getElementById('mockDataCount').textContent = `${allFeedback.length} items`;
     }
 
     async function generateMockData() {
       const btn = document.getElementById('generateMockBtn');
-      const originalText = btn.textContent;
       btn.disabled = true;
-      btn.textContent = '⏳ Generating...';
+      btn.textContent = 'Generating...';
 
       try {
-        for (const feedback of mockFeedback) {
+        for (const fb of mockFeedback) {
           await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(feedback)
+            body: JSON.stringify(fb),
           });
         }
         await loadFeedback();
-        displayCategoryResults();
-        showMessage('success', `✓ Generated ${mockFeedback.length} mock feedback items`);
-      } catch (error) {
-        showMessage('error', 'Failed to generate mock data');
+        displayFeedback();
       } finally {
         btn.disabled = false;
-        btn.textContent = originalText;
+        btn.textContent = 'Generate Mock Data';
       }
     }
 
-    async function processWithAi() {
-      showMessage('success', '⚡ Processing feedback with AI (this would trigger Workflows in production)');
-    }
-
     function updateCounts() {
-      const counts = {
-        email: 0,
-        discord: 0,
-        'support-ticket': 0,
-        twitter: 0,
-        'github-issue': 0,
-        positive: 0,
-        neutral: 0,
-        negative: 0,
-      };
-
+      const counts = { email: 0, discord: 0, 'support-ticket': 0, twitter: 0, 'github-issue': 0, positive: 0, neutral: 0, negative: 0 };
       allFeedback.forEach(item => {
-        if (item.source && counts[item.source] !== undefined) {
-          counts[item.source]++;
-        }
-        if (item.sentiment && counts[item.sentiment] !== undefined) {
-          counts[item.sentiment]++;
-        }
+        if (counts[item.source] !== undefined) counts[item.source]++;
+        if (counts[item.sentiment] !== undefined) counts[item.sentiment]++;
       });
-
       Object.entries(counts).forEach(([key, count]) => {
         const el = document.getElementById(`count-${key}`);
         if (el) el.textContent = count;
       });
     }
 
-    function displayCategoryResults() {
+    function displayFeedback() {
       const sources = selectedSources.has('all') ? null : Array.from(selectedSources);
       const sentiments = selectedSentiments.size > 0 ? Array.from(selectedSentiments) : null;
 
@@ -777,220 +851,126 @@
         return sourceMatch && sentimentMatch;
       });
 
-      const resultEl = document.getElementById('categoryResults');
-      const headerEl = document.getElementById('resultsHeader');
+      const list = document.getElementById('feedbackList');
+      const header = document.getElementById('resultsHeader');
 
       if (filtered.length === 0) {
-        resultEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div>No results</div>';
-        headerEl.textContent = 'No feedback found';
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No results</p></div>';
+        header.textContent = 'No feedback found';
         return;
       }
 
-      headerEl.textContent = `Showing ${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
-
-      resultEl.innerHTML = filtered.map(item => `
-        <div class="category-item">
-          <div class="category-item-source">${getSourceEmoji(item.source)} ${item.source}</div>
-          <div class="category-item-text">${escapeHtml(item.content)}</div>
-          <div style="margin-top: 8px; display: flex; gap: 8px; font-size: 11px;">
-            ${item.sentiment ? `<span class="badge sentiment-${item.sentiment}">${item.sentiment}</span>` : ''}
+      header.textContent = `Showing ${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
+      list.innerHTML = filtered.map(item => `
+        <div class="feedback-item">
+          <div class="feedback-source">${getEmoji(item.source)} ${item.source}</div>
+          <div class="feedback-text">${escapeHtml(item.content)}</div>
+          <div class="feedback-meta">
+            <span class="badge sentiment-${item.sentiment}">${item.sentiment}</span>
             ${item.author ? `<span class="badge">👤 ${item.author}</span>` : ''}
           </div>
         </div>
       `).join('');
     }
 
-    function getSourceEmoji(source) {
-      const emojis = {
-        'email': '📧',
-        'discord': '💬',
-        'support-ticket': '🎫',
-        'twitter': '𝕏',
-        'github-issue': '🐙',
-      };
-      return emojis[source] || '📝';
+    function getEmoji(source) {
+      return { email: '📧', discord: '💬', 'support-ticket': '🎫', twitter: '𝕏', 'github-issue': '🐙' }[source] || '📝';
     }
 
     function setupEventListeners() {
-      // Generate mock data
       document.getElementById('generateMockBtn').addEventListener('click', generateMockData);
+      document.getElementById('processAiBtn').addEventListener('click', () => addMessage('ai', '⚡ Processing feedback with AI...'));
+      document.getElementById('sendBtn').addEventListener('click', sendMessage);
+      document.getElementById('aiInput').addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
 
-      // Process with AI
-      document.getElementById('processAiBtn').addEventListener('click', processWithAi);
-
-      // Source filters
-      document.querySelectorAll('[data-source]').forEach(option => {
-        option.addEventListener('click', (e) => {
-          if (e.target.type === 'checkbox') return;
-          const checkbox = option.querySelector('input[type="checkbox"]');
-          checkbox.checked = !checkbox.checked;
-          const source = option.dataset.source;
+      document.querySelectorAll('[data-source]').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const source = opt.dataset.source;
+          const cb = opt.querySelector('input');
+          cb.checked = !cb.checked;
 
           if (source === 'all') {
             selectedSources = new Set(['all']);
-            document.querySelectorAll('[data-source] input').forEach(cb => cb.checked = source === 'all' || cb.id === 'source-all');
+            document.querySelectorAll('[data-source] input').forEach(c => c.checked = c.id === 'filter-all');
           } else {
             selectedSources.delete('all');
-            if (checkbox.checked) {
-              selectedSources.add(source);
-            } else {
-              selectedSources.delete(source);
-            }
-            if (selectedSources.size === 0) {
-              selectedSources = new Set(['all']);
-              document.getElementById('source-all').checked = true;
-            }
+            cb.checked ? selectedSources.add(source) : selectedSources.delete(source);
+            if (!selectedSources.size) selectedSources = new Set(['all']);
           }
-          document.getElementById('source-all').checked = selectedSources.has('all');
-          displayCategoryResults();
+          document.getElementById('filter-all').checked = selectedSources.has('all');
+          displayFeedback();
         });
       });
 
-      // Sentiment filters
-      document.querySelectorAll('[data-sentiment]').forEach(option => {
-        option.addEventListener('click', (e) => {
-          if (e.target.type === 'checkbox') return;
-          const checkbox = option.querySelector('input[type="checkbox"]');
-          checkbox.checked = !checkbox.checked;
-          const sentiment = option.dataset.sentiment;
-
-          if (checkbox.checked) {
-            selectedSentiments.add(sentiment);
-          } else {
-            selectedSentiments.delete(sentiment);
-          }
-          displayCategoryResults();
+      document.querySelectorAll('[data-sentiment]').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const sentiment = opt.dataset.sentiment;
+          const cb = opt.querySelector('input');
+          cb.checked = !cb.checked;
+          cb.checked ? selectedSentiments.add(sentiment) : selectedSentiments.delete(sentiment);
+          displayFeedback();
         });
       });
 
-      // AI Chatbot
-      const aiSearchBtn = document.getElementById('aiSearchBtn');
-      const aiSearchInput = document.getElementById('aiSearchInput');
-
-      aiSearchBtn.addEventListener('click', sendChatMessage);
-      aiSearchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendChatMessage();
-      });
-
-      // Quick prompts
-      document.querySelectorAll('.quick-prompt-btn').forEach(btn => {
+      document.querySelectorAll('.quick-action-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const prompt = btn.dataset.prompt;
-          document.getElementById('aiSearchInput').value = prompt;
-          sendChatMessage();
+          document.getElementById('aiInput').value = btn.dataset.prompt;
+          sendMessage();
         });
       });
-
-      // Initial greeting
-      addChatMessage('ai', "👋 Hi! I'm your AI assistant. Ask me about your feedback! Try questions like 'What are my critical feedback?' or 'Show me negative feedback.'");
     }
 
-    function addChatMessage(type, text) {
-      const messagesEl = document.getElementById('chatMessages');
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `chat-message ${type}`;
-      msgDiv.innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
-      messagesEl.appendChild(msgDiv);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    async function sendChatMessage() {
-      const query = document.getElementById('aiSearchInput').value.trim();
-      if (!query) return;
-
-      // Add user message
-      addChatMessage('user', query);
-      document.getElementById('aiSearchInput').value = '';
-
-      // Hide quick prompts
-      const quickPrompts = document.getElementById('quickPrompts');
-      quickPrompts.style.display = 'none';
-
-      // Process query and get results
-      try {
-        // Natural language processing
-        const lowerQuery = query.toLowerCase();
-        let resultText = '';
-        let feedbackToShow = [];
-
-        // Detect intent and filter
-        if (lowerQuery.includes('critical') || lowerQuery.includes('urgent') || lowerQuery.includes('high priority')) {
-          const critical = allFeedback.filter(f => f.urgency === 'critical' || (f.sentiment === 'negative' && f.source === 'support-ticket'));
-          resultText = critical.length > 0
-            ? `Found ${critical.length} critical feedback items:\n\n` + critical.slice(0, 3).map(f => `• ${f.content}`).join('\n')
-            : 'No critical feedback found. That\'s great!';
-          feedbackToShow = critical;
-        } else if (lowerQuery.includes('negative') || lowerQuery.includes('complaint') || lowerQuery.includes('issue')) {
-          const negative = allFeedback.filter(f => f.sentiment === 'negative');
-          resultText = negative.length > 0
-            ? `Found ${negative.length} negative feedback items. Here are the top concerns:\n\n` + negative.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n')
-            : 'No negative feedback. Excellent!';
-          feedbackToShow = negative;
-        } else if (lowerQuery.includes('positive') || lowerQuery.includes('happy') || lowerQuery.includes('good')) {
-          const positive = allFeedback.filter(f => f.sentiment === 'positive');
-          resultText = positive.length > 0
-            ? `Found ${positive.length} positive feedback items. Great work!\n\n` + positive.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n')
-            : 'No positive feedback yet.';
-          feedbackToShow = positive;
-        } else if (lowerQuery.includes('discord')) {
-          const discord = allFeedback.filter(f => f.source === 'discord');
-          resultText = discord.length > 0
-            ? `Found ${discord.length} Discord messages:\n\n` + discord.slice(0, 3).map(f => `• ${f.content}`).join('\n')
-            : 'No Discord feedback.';
-          feedbackToShow = discord;
-        } else if (lowerQuery.includes('email')) {
-          const email = allFeedback.filter(f => f.source === 'email');
-          resultText = email.length > 0
-            ? `Found ${email.length} email feedback items:\n\n` + email.slice(0, 3).map(f => `• ${f.content}`).join('\n')
-            : 'No email feedback.';
-          feedbackToShow = email;
-        } else if (lowerQuery.includes('support') || lowerQuery.includes('ticket')) {
-          const support = allFeedback.filter(f => f.source === 'support-ticket');
-          resultText = support.length > 0
-            ? `Found ${support.length} support tickets:\n\n` + support.slice(0, 3).map(f => `• ${f.content}`).join('\n')
-            : 'No support tickets.';
-          feedbackToShow = support;
-        } else {
-          // Semantic search fallback
-          const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-          const data = await response.json();
-
-          if (data.results && data.results.length > 0) {
-            resultText = `Found ${data.results.length} relevant feedback items:\n\n` + data.results.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n');
-            feedbackToShow = data.results;
-          } else {
-            resultText = "I didn't find any matching feedback. Try asking about 'critical feedback', 'Discord', 'email', 'positive', or 'negative'.";
-          }
-        }
-
-        // Add AI response
-        addChatMessage('ai', resultText);
-
-      } catch (error) {
-        addChatMessage('ai', "Sorry, I encountered an error. Try asking about critical feedback, negative feedback, or a specific source like Discord or email.");
-      }
-    }
-
-    function showMessage(type, text) {
+    function addMessage(type, text) {
+      const area = document.getElementById('messagesArea');
       const msg = document.createElement('div');
       msg.className = `message ${type}`;
-      msg.textContent = text;
-      document.body.insertBefore(msg, document.querySelector('.app-container'));
-      setTimeout(() => msg.remove(), 3000);
+      msg.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+      area.appendChild(msg);
+      area.scrollTop = area.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('aiInput');
+      const query = input.value.trim();
+      if (!query) return;
+
+      addMessage('user', query);
+      input.value = '';
+      document.getElementById('quickActions').style.display = 'none';
+
+      const lower = query.toLowerCase();
+      let response = '';
+
+      if (lower.includes('critical') || lower.includes('urgent') || lower.includes('priority')) {
+        const critical = allFeedback.filter(f => f.sentiment === 'negative' || f.source === 'support-ticket');
+        response = critical.length ? `Found ${critical.length} critical items:\n\n${critical.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No critical issues found!';
+      } else if (lower.includes('negative') || lower.includes('complaint')) {
+        const neg = allFeedback.filter(f => f.sentiment === 'negative');
+        response = neg.length ? `${neg.length} negative feedback:\n\n${neg.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n')}` : 'No negative feedback!';
+      } else if (lower.includes('positive') || lower.includes('happy')) {
+        const pos = allFeedback.filter(f => f.sentiment === 'positive');
+        response = pos.length ? `${pos.length} positive items:\n\n${pos.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n')}` : 'No positive feedback yet.';
+      } else if (lower.includes('discord')) {
+        const disc = allFeedback.filter(f => f.source === 'discord');
+        response = disc.length ? `${disc.length} Discord messages:\n\n${disc.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No Discord feedback.';
+      } else if (lower.includes('email')) {
+        const email = allFeedback.filter(f => f.source === 'email');
+        response = email.length ? `${email.length} emails:\n\n${email.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No emails.';
+      } else if (lower.includes('support') || lower.includes('ticket')) {
+        const sup = allFeedback.filter(f => f.source === 'support-ticket');
+        response = sup.length ? `${sup.length} support tickets:\n\n${sup.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No tickets.';
+      } else {
+        response = `I found ${allFeedback.length} total feedback items. Try asking about "critical", "negative", or a specific source like "Discord" or "email".`;
+      }
+
+      addMessage('ai', response);
     }
 
     function escapeHtml(text) {
-      const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;',
-      };
-      return text.replace(/[&<>"']/g, m => map[m]);
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
     }
 
-    // Initialize on load
     document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
