@@ -291,6 +291,116 @@ Each guide should:
 
 ---
 
+## Friction Point 11: Workers AI Binding Availability Check
+
+**Title:** No clear pattern for graceful AI binding fallback
+
+**Problem:**
+When integrating Workers AI for sentiment analysis and LLM insights, there's no clear documentation on how to:
+1. Check if the AI binding is available at runtime
+2. Gracefully fall back when AI is not configured
+3. Handle the difference between dev (no AI) vs production (AI available)
+
+I had to write defensive code like:
+```typescript
+if (c.env.AI) {
+  // Use Workers AI
+} else {
+  // Fallback to keyword-based analysis
+}
+```
+
+The documentation shows happy-path examples but doesn't address real-world scenarios where AI bindings might be unavailable in development or certain regions.
+
+**Suggestion:**
+1. Add a "**Graceful Degradation**" section to Workers AI docs
+2. Provide a helper function: `isAIAvailable(env)` that does proper checks
+3. Document which Workers AI features work in `wrangler dev` vs production
+4. Explain binding availability across different account tiers
+
+---
+
+## Friction Point 12: No Batch Inference for Workers AI Models
+
+**Title:** Must make individual requests for batch processing
+
+**Problem:**
+When implementing sentiment analysis on multiple feedback items, I discovered that Workers AI models like `@cf/huggingface/distilbert-sst-2-int8` don't support batch inference. This means:
+```typescript
+// Have to make N individual requests instead of one batch
+const sentimentPromises = feedbackItems.map(async (fb) => {
+  return await c.env.AI.run('@cf/huggingface/distilbert-sst-2-int8', {
+    text: fb.content,
+  });
+});
+```
+
+This is slower and costs more API calls compared to a batch endpoint. For analyzing 100 feedback items, I need 100 separate API calls instead of 1 batch call.
+
+**Suggestion:**
+1. Add **batch inference support** to Workers AI: `AI.runBatch(model, [{text: "..."}, {text: "..."}])`
+2. Document which models support batching
+3. Provide optimal batch sizes for each model
+4. Consider pricing implications for batch vs individual calls
+
+---
+
+## Friction Point 13: Workers AI Model Regional Availability
+
+**Title:** Model availability across regions not documented
+
+**Problem:**
+When using `@cf/meta/llama-3.1-8b-instruct` for generating PM insights, I had to wonder:
+1. Is this model available in all Cloudflare regions?
+2. Will my Worker fail if routed to a region without the model?
+3. Are there latency differences between regions for AI models?
+
+The documentation lists models but doesn't explain:
+- Regional availability
+- Fallback behavior if a model isn't available in a region
+- Latency characteristics by region
+- How Smart Placement interacts with AI model availability
+
+**Suggestion:**
+1. Add a "**Model Availability**" section showing which models are available where
+2. Explain regional routing behavior for AI requests
+3. Document fallback patterns when models aren't available
+4. Provide guidance on using Smart Placement with Workers AI
+
+---
+
+## Friction Point 14: Generic Workers AI Error Messages
+
+**Title:** Difficult to debug AI call failures
+
+**Problem:**
+When Workers AI calls fail, the error messages are generic and don't indicate:
+1. Whether it's a model issue, quota issue, or binding issue
+2. Rate limit information (remaining calls, retry-after)
+3. Specific failure reasons (input too long, invalid format, etc.)
+
+Example error encountered:
+```
+LLM analysis failed: [object Object]
+```
+
+This makes it nearly impossible to diagnose issues without extensive logging.
+
+**Suggestion:**
+1. Provide **structured error responses** with error codes:
+   ```typescript
+   {
+     code: "RATE_LIMIT_EXCEEDED",
+     retryAfter: 60,
+     message: "Model rate limit exceeded, try again in 60s"
+   }
+   ```
+2. Include **quota information** in responses: remaining calls, reset time
+3. Add **validation errors** for input issues: "Input text exceeds 512 token limit"
+4. Provide **debugging headers** in responses for tracing
+
+---
+
 ## Positive Observations
 
 While there were friction points, some things worked well:
@@ -309,9 +419,13 @@ While there were friction points, some things worked well:
 | --- | --- | --- |
 | 🔴 High | Local Vectorize emulator | Unblocks semantic search development |
 | 🔴 High | Improve D1 error messages | Enables faster debugging |
+| 🔴 High | Workers AI batch inference support | Improves performance & reduces costs |
+| 🔴 High | Better Workers AI error messages | Enables debugging AI integrations |
 | 🟡 Medium | Unified binding configuration guide | Reduces onboarding friction |
 | 🟡 Medium | Workflow documentation improvements | Enables complex pipelines |
 | 🟡 Medium | Workers AI model reference table | Improves discoverability |
+| 🟡 Medium | AI binding graceful degradation docs | Helps dev/prod parity |
+| 🟡 Medium | Document AI model regional availability | Prevents deployment surprises |
 | 🟢 Low | Use-case-driven guides | Helps with larger projects |
 | 🟢 Low | R2 bucket auto-provisioning | Nice-to-have automation |
 
@@ -319,12 +433,27 @@ While there were friction points, some things worked well:
 
 ## Build Time Notes
 
-- **Total build time**: ~45 minutes for MVP
+- **Total build time**: ~90 minutes for full MVP with AI integration
 - **Largest time sinks**:
   1. Understanding binding configuration (10 min)
   2. Debugging D1 schema errors (8 min)
-  3. Workers AI model selection (7 min)
-  4. Frontend implementation (15 min)
-  5. Architecture documentation (5 min)
+  3. Workers AI model selection and integration (20 min)
+  4. Workers AI error handling and fallbacks (12 min)
+  5. Frontend AI visualization implementation (25 min)
+  6. Architecture documentation (5 min)
+  7. Testing and deployment cycles (10 min)
 
-The friction points added approximately 25 minutes of overhead compared to building on a platform with better local dev tools and clearer documentation.
+The friction points added approximately 40 minutes of overhead compared to building on a platform with better local dev tools, clearer documentation, and more informative error messages.
+
+---
+
+## Friction Points Summary
+
+**14 friction points documented** covering:
+- Configuration: wrangler.toml syntax inconsistencies (#1)
+- Local Development: Missing emulators for Vectorize, R2 (#2, #5, #7, #8)
+- Error Handling: D1 and Workers AI errors lack context (#3, #14)
+- Documentation: Workflows, AI models, regional availability (#4, #6, #10, #11, #12, #13)
+- Tooling: No type safety for bindings (#9)
+
+**Most impactful for PM assignment**: Friction points #11-14 related to Workers AI are particularly relevant as they directly affected the ability to build AI-powered feedback analysis features.

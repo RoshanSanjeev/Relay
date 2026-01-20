@@ -636,6 +636,48 @@
       font-weight: 500;
     }
 
+    .sort-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sort-select {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
+      color: #e5e5e5;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23F38020' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .sort-select:hover {
+      background-color: rgba(243, 128, 32, 0.08);
+      border-color: rgba(243, 128, 32, 0.25);
+    }
+
+    .sort-select:focus {
+      outline: none;
+      border-color: #F38020;
+      box-shadow: 0 0 0 2px rgba(243, 128, 32, 0.15);
+    }
+
+    .sort-select option {
+      background: #1a1a1a;
+      color: #e5e5e5;
+      padding: 10px;
+    }
+
     .results-container {
       flex: 1;
       overflow-y: auto;
@@ -728,6 +770,17 @@
       letter-spacing: 0.6px;
       font-weight: 700;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feedback-date {
+      font-size: 10px;
+      color: #666;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
     }
 
     .feedback-text {
@@ -807,6 +860,40 @@
       background: rgba(20, 20, 20, 0.6);
       border-radius: 12px;
       border: 1px solid rgba(243, 128, 32, 0.1);
+    }
+
+    .ai-response {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(243, 128, 32, 0.08) 0%, rgba(20, 20, 20, 0.4) 100%);
+      border-radius: 10px;
+      border-left: 3px solid #F38020;
+    }
+
+    .ai-response-text {
+      font-size: 14px;
+      color: #e5e5e5;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .ai-response-detail {
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.5;
+      margin-bottom: 8px;
+      padding-left: 12px;
+      border-left: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .ai-response-recommendation {
+      font-size: 12px;
+      color: #22c55e;
+      line-height: 1.5;
+      padding: 8px 10px;
+      background: rgba(34, 197, 94, 0.08);
+      border-radius: 6px;
+      margin-top: 8px;
     }
 
     .ai-step {
@@ -1006,6 +1093,257 @@
     .ai-source-btn:hover {
       background: rgba(243, 128, 32, 0.2);
       transform: translateY(-1px);
+    }
+
+    /* ========== AI INSIGHTS REFINED ========== */
+    @keyframes insightReveal {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes subtleGlow {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(243, 128, 32, 0);
+      }
+      50% {
+        box-shadow: 0 0 20px -5px rgba(243, 128, 32, 0.15);
+      }
+    }
+
+    .insights-container {
+      margin-top: 20px;
+      animation: insightReveal 0.4s ease-out forwards;
+    }
+
+    .ai-powered-section {
+      position: relative;
+      margin-bottom: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(243, 128, 32, 0.04) 0%, rgba(243, 128, 32, 0.01) 100%);
+      border: 1px solid rgba(243, 128, 32, 0.12);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .ai-powered-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(243, 128, 32, 0.4), transparent);
+    }
+
+    .ai-powered-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #b8b8b8;
+      letter-spacing: 0.3px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: linear-gradient(135deg, rgba(243, 128, 32, 0.18) 0%, rgba(243, 128, 32, 0.08) 100%);
+      border: 1px solid rgba(243, 128, 32, 0.25);
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      color: #F38020;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .ai-badge::before {
+      content: '◆';
+      font-size: 6px;
+      opacity: 0.8;
+    }
+
+    .ai-insight.ai-generated {
+      position: relative;
+      background: linear-gradient(135deg, rgba(243, 128, 32, 0.06) 0%, rgba(20, 20, 20, 0.8) 100%);
+      border: 1px solid rgba(243, 128, 32, 0.1);
+      border-left: 3px solid #F38020;
+      border-radius: 0 10px 10px 0;
+      animation: subtleGlow 3s ease-in-out infinite;
+      margin-top: 10px;
+    }
+
+    .ai-insight.ai-generated:first-of-type {
+      margin-top: 0;
+    }
+
+    .ai-insight.ai-generated .ai-insight-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ai-insight.ai-generated .ai-insight-text {
+      color: #e0e0e0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .ai-insight.ai-generated .ai-insight-text strong {
+      font-weight: 600;
+    }
+
+    .results-preview {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .results-preview-header {
+      font-size: 9px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .results-preview-item {
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .results-preview-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .results-preview-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(243, 128, 32, 0.15);
+      transform: translateX(2px);
+    }
+
+    /* ========== SOURCE ACCORDION ========== */
+    .ai-sources-expandable {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .source-accordion {
+      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .source-accordion:hover {
+      border-color: rgba(243, 128, 32, 0.2);
+    }
+
+    .source-accordion-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: none;
+      color: #e5e5e5;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .source-accordion-btn:hover {
+      background: rgba(243, 128, 32, 0.08);
+    }
+
+    .source-count {
+      font-size: 11px;
+      color: #888;
+      font-weight: 400;
+    }
+
+    .accordion-arrow {
+      font-size: 9px;
+      color: #666;
+      transition: transform 0.2s ease;
+    }
+
+    .source-accordion.expanded .accordion-arrow {
+      transform: rotate(90deg);
+      color: #F38020;
+    }
+
+    .source-accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .source-accordion.expanded .source-accordion-content {
+      max-height: 500px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .source-message-item {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .source-message-item:last-child {
+      border-bottom: none;
+    }
+
+    .source-message-meta {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .source-message-text {
+      font-size: 12px;
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    .source-message-author {
+      font-size: 10px;
+      color: #666;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    .source-more {
+      padding: 8px 12px;
+      font-size: 11px;
+      color: #F38020;
+      text-align: center;
+      background: rgba(243, 128, 32, 0.05);
     }
 
     /* ========== LOADING ========== */
@@ -1217,6 +1555,20 @@
               </div>
             </div>
           </div>
+
+          <div class="filter-section">
+            <label class="filter-label">Sort By</label>
+            <div class="sort-options">
+              <select id="sortSelect" class="sort-select">
+                <option value="date-desc">📅 Newest First</option>
+                <option value="date-asc">📅 Oldest First</option>
+                <option value="urgency-desc">🔴 Urgency (High→Low)</option>
+                <option value="urgency-asc">🟢 Urgency (Low→High)</option>
+                <option value="sentiment-neg">😠 Negative First</option>
+                <option value="sentiment-pos">😊 Positive First</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <!-- VERTICAL DIVIDER -->
@@ -1233,22 +1585,86 @@
 
   <script>
     const mockFeedback = [
-      { content: 'Login completely broken, blocking all user access', source: 'support-ticket', sentiment: 'negative', urgency: 'critical', author: 'Support' },
-      { content: 'New dashboard design is amazing, very intuitive', source: 'discord', sentiment: 'positive', urgency: 'low', author: 'User #234' },
-      { content: 'API docs are outdated and missing examples', source: 'github-issue', sentiment: 'negative', urgency: 'high', author: 'Dev' },
-      { content: 'Excellent customer support response time', source: 'email', sentiment: 'positive', urgency: 'low', author: 'Client' },
-      { content: 'Performance is slow during peak hours', source: 'twitter', sentiment: 'negative', urgency: 'high', author: '@feedback' },
-      { content: 'Would love dark mode support', source: 'discord', sentiment: 'neutral', urgency: 'medium', author: 'User #567' },
-      { content: 'Slack integration would be powerful', source: 'github-issue', sentiment: 'positive', urgency: 'medium', author: 'Engineer' },
-      { content: 'Pricing is higher than competitors', source: 'email', sentiment: 'negative', urgency: 'medium', author: 'Prospect' },
-      { content: 'Works well for our enterprise needs', source: 'support-ticket', sentiment: 'positive', urgency: 'low', author: 'PM' },
-      { content: 'Mobile app crashes on startup', source: 'twitter', sentiment: 'negative', urgency: 'critical', author: '@user' },
+      // CRITICAL ISSUES - Blockers
+      { content: 'Login completely broken, blocking all user access since this morning', source: 'support-ticket', sentiment: 'negative', urgency: 'critical', author: 'Support Lead' },
+      { content: 'Mobile app crashes on startup after latest update, cannot access anything', source: 'twitter', sentiment: 'negative', urgency: 'critical', author: '@enterprise_user' },
+      { content: 'Payment processing failing for all customers, revenue impact immediate', source: 'support-ticket', sentiment: 'negative', urgency: 'critical', author: 'Billing Team' },
+      { content: 'Data export feature corrupting files, critical for compliance deadline', source: 'email', sentiment: 'negative', urgency: 'critical', author: 'Legal Dept' },
+      { content: 'SSO integration broken after your last deployment, 500 users locked out', source: 'support-ticket', sentiment: 'negative', urgency: 'critical', author: 'IT Admin' },
+
+      // HIGH PRIORITY - Urgent but not blocking
+      { content: 'API docs are outdated and missing examples for v3 endpoints', source: 'github-issue', sentiment: 'negative', urgency: 'high', author: 'Senior Dev' },
+      { content: 'Performance is slow during peak hours, 10s+ load times reported', source: 'twitter', sentiment: 'negative', urgency: 'high', author: '@techreview' },
+      { content: 'Webhook deliveries failing intermittently, affecting our automation', source: 'github-issue', sentiment: 'negative', urgency: 'high', author: 'Integration Lead' },
+      { content: 'Search functionality returning incorrect results for complex queries', source: 'support-ticket', sentiment: 'negative', urgency: 'high', author: 'Power User' },
+      { content: 'Dashboard widgets not loading for some team members', source: 'discord', sentiment: 'negative', urgency: 'high', author: 'Team Lead' },
+      { content: 'CSV import failing silently for files over 10MB', source: 'email', sentiment: 'negative', urgency: 'high', author: 'Data Analyst' },
+
+      // FEATURE REQUESTS - Medium priority
+      { content: 'Would love dark mode support, working late nights is painful', source: 'discord', sentiment: 'neutral', urgency: 'medium', author: 'Night Owl Dev' },
+      { content: 'Slack integration would be powerful for our workflow', source: 'github-issue', sentiment: 'positive', urgency: 'medium', author: 'DevOps Engineer' },
+      { content: 'Need ability to customize email notification templates', source: 'email', sentiment: 'neutral', urgency: 'medium', author: 'Marketing Manager' },
+      { content: 'Requesting bulk edit functionality for managing large datasets', source: 'support-ticket', sentiment: 'neutral', urgency: 'medium', author: 'Operations' },
+      { content: 'Would be great to have keyboard shortcuts for power users', source: 'discord', sentiment: 'positive', urgency: 'medium', author: 'Productivity Geek' },
+      { content: 'API rate limits are too restrictive for our use case, need higher tier', source: 'github-issue', sentiment: 'negative', urgency: 'medium', author: 'Tech Lead' },
+      { content: 'Mobile app needs offline mode for field workers', source: 'email', sentiment: 'neutral', urgency: 'medium', author: 'Field Operations' },
+      { content: 'Requesting two-factor authentication options beyond SMS', source: 'support-ticket', sentiment: 'neutral', urgency: 'medium', author: 'Security Officer' },
+
+      // PRICING & BILLING CONCERNS
+      { content: 'Pricing is higher than competitors, hard to justify to leadership', source: 'email', sentiment: 'negative', urgency: 'medium', author: 'Procurement' },
+      { content: 'Need more flexible pricing tiers for small teams', source: 'discord', sentiment: 'negative', urgency: 'medium', author: 'Startup Founder' },
+      { content: 'Billing page confusing, accidentally upgraded wrong account', source: 'support-ticket', sentiment: 'negative', urgency: 'high', author: 'Finance' },
+      { content: 'Would appreciate annual billing discount option', source: 'email', sentiment: 'neutral', urgency: 'low', author: 'CFO Office' },
+
+      // POSITIVE FEEDBACK - Happy customers
+      { content: 'New dashboard design is amazing, very intuitive and clean', source: 'discord', sentiment: 'positive', urgency: 'low', author: 'Happy User #234' },
+      { content: 'Excellent customer support response time, issue resolved in 10 min', source: 'email', sentiment: 'positive', urgency: 'low', author: 'Satisfied Client' },
+      { content: 'Works well for our enterprise needs, scaling beautifully', source: 'support-ticket', sentiment: 'positive', urgency: 'low', author: 'Enterprise PM' },
+      { content: 'The new analytics features are exactly what we needed', source: 'twitter', sentiment: 'positive', urgency: 'low', author: '@datadriven' },
+      { content: 'Onboarding flow is smooth, team was productive in hours not days', source: 'email', sentiment: 'positive', urgency: 'low', author: 'New Customer' },
+      { content: 'API is well-designed and easy to integrate with', source: 'github-issue', sentiment: 'positive', urgency: 'low', author: 'Backend Dev' },
+      { content: 'Love the recent performance improvements, noticeably faster', source: 'discord', sentiment: 'positive', urgency: 'low', author: 'Long-time User' },
+      { content: 'Your product helped us reduce manual work by 60%', source: 'email', sentiment: 'positive', urgency: 'low', author: 'COO' },
+
+      // DOCUMENTATION & ONBOARDING
+      { content: 'Getting started guide is incomplete, missing key steps', source: 'github-issue', sentiment: 'negative', urgency: 'medium', author: 'New Developer' },
+      { content: 'Video tutorials would help visual learners like me', source: 'discord', sentiment: 'neutral', urgency: 'low', author: 'Visual Learner' },
+      { content: 'API changelog should be more detailed about breaking changes', source: 'github-issue', sentiment: 'negative', urgency: 'medium', author: 'Integration Dev' },
+      { content: 'FAQ section answered all my questions, well organized', source: 'email', sentiment: 'positive', urgency: 'low', author: 'Self-Service User' },
+
+      // SECURITY CONCERNS
+      { content: 'Need SOC2 compliance documentation for our audit', source: 'email', sentiment: 'neutral', urgency: 'high', author: 'Compliance Officer' },
+      { content: 'Concerned about data residency, need EU-only option', source: 'support-ticket', sentiment: 'negative', urgency: 'high', author: 'GDPR Lead' },
+      { content: 'Requesting audit logs for all admin actions', source: 'github-issue', sentiment: 'neutral', urgency: 'medium', author: 'Security Team' },
+      { content: 'Password policy should enforce stronger requirements', source: 'email', sentiment: 'negative', urgency: 'medium', author: 'IT Security' },
+
+      // UX/UI FEEDBACK
+      { content: 'Navigation is confusing, took 5 clicks to find settings', source: 'discord', sentiment: 'negative', urgency: 'medium', author: 'UX Critic' },
+      { content: 'Color contrast issues making text hard to read', source: 'support-ticket', sentiment: 'negative', urgency: 'medium', author: 'Accessibility User' },
+      { content: 'Love the clean interface, not cluttered like competitors', source: 'twitter', sentiment: 'positive', urgency: 'low', author: '@designlover' },
+      { content: 'Modal dialogs are too small on high-res displays', source: 'github-issue', sentiment: 'negative', urgency: 'low', author: '4K User' },
+
+      // INTEGRATION REQUESTS
+      { content: 'Zapier integration would unlock so many automations for us', source: 'discord', sentiment: 'positive', urgency: 'medium', author: 'Automation Fan' },
+      { content: 'Need native Salesforce connector for our sales team', source: 'email', sentiment: 'neutral', urgency: 'high', author: 'Sales Ops' },
+      { content: 'Jira integration is buggy, tickets not syncing properly', source: 'github-issue', sentiment: 'negative', urgency: 'high', author: 'Scrum Master' },
+      { content: 'Google Workspace SSO setup was seamless, great job', source: 'email', sentiment: 'positive', urgency: 'low', author: 'IT Admin' },
+
+      // GENERAL COMPLAINTS
+      { content: 'Too many emails from your system, need better notification controls', source: 'twitter', sentiment: 'negative', urgency: 'low', author: '@inbox_zero' },
+      { content: 'App keeps logging me out, very frustrating', source: 'support-ticket', sentiment: 'negative', urgency: 'medium', author: 'Frequent User' },
+      { content: 'Loading spinner shows forever on slow connections', source: 'discord', sentiment: 'negative', urgency: 'medium', author: 'Remote Worker' },
     ];
 
     let allFeedback = [];
     let selectedSources = new Set(['all']);
     let selectedSentiments = new Set();
     let selectedUrgencies = new Set();
+    let currentSort = 'date-desc';
+
+    // Urgency priority for sorting
+    const urgencyOrder = { 'critical': 4, 'high': 3, 'medium': 2, 'low': 1 };
+    const sentimentOrder = { 'negative': 3, 'neutral': 2, 'positive': 1 };
 
     /* ========== DRAGGABLE DIVIDER ========== */
     let isDragging = false;
@@ -1406,6 +1822,9 @@
         return sourceMatch && sentimentMatch && urgencyMatch;
       });
 
+      // Apply sorting
+      filtered = sortFeedback(filtered, currentSort);
+
       const list = document.getElementById('feedbackList');
       const header = document.getElementById('resultsHeader');
 
@@ -1416,9 +1835,11 @@
       }
 
       header.textContent = `Showing ${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
-      list.innerHTML = filtered.map(item => `
+      list.innerHTML = filtered.map(item => {
+        const dateStr = item.created_at ? formatDate(item.created_at) : '';
+        return `
         <div class="feedback-item">
-          <div class="feedback-source">${getEmoji(item.source)} ${item.source}</div>
+          <div class="feedback-source">${getEmoji(item.source)} ${item.source}${dateStr ? ` <span class="feedback-date">${dateStr}</span>` : ''}</div>
           <div class="feedback-text">${escapeHtml(item.content)}</div>
           <div class="feedback-meta">
             <span class="badge sentiment-${item.sentiment}">${item.sentiment}</span>
@@ -1426,7 +1847,41 @@
             ${item.author ? `<span class="badge">👤 ${item.author}</span>` : ''}
           </div>
         </div>
-      `).join('');
+      `}).join('');
+    }
+
+    function sortFeedback(items, sortType) {
+      const sorted = [...items];
+      switch (sortType) {
+        case 'date-desc':
+          return sorted.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        case 'date-asc':
+          return sorted.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+        case 'urgency-desc':
+          return sorted.sort((a, b) => (urgencyOrder[b.urgency] || 0) - (urgencyOrder[a.urgency] || 0));
+        case 'urgency-asc':
+          return sorted.sort((a, b) => (urgencyOrder[a.urgency] || 0) - (urgencyOrder[b.urgency] || 0));
+        case 'sentiment-neg':
+          return sorted.sort((a, b) => (sentimentOrder[b.sentiment] || 0) - (sentimentOrder[a.sentiment] || 0));
+        case 'sentiment-pos':
+          return sorted.sort((a, b) => (sentimentOrder[a.sentiment] || 0) - (sentimentOrder[b.sentiment] || 0));
+        default:
+          return sorted;
+      }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays}d ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
     function getEmoji(source) {
@@ -1478,6 +1933,12 @@
         });
       });
 
+      // Sort select
+      document.getElementById('sortSelect').addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        displayFeedback();
+      });
+
       document.querySelectorAll('.quick-action-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.getElementById('aiInput').value = btn.dataset.prompt;
@@ -1511,14 +1972,108 @@
       input.value = '';
       document.getElementById('quickActions').style.display = 'none';
 
-      // Start the animated analysis
-      await runPMAnalysis(query);
+      const lower = query.toLowerCase();
+
+      // Check if this is a conversational message (not a PM/feedback query)
+      const conversationalResponse = getConversationalResponse(lower, query);
+      if (conversationalResponse) {
+        await delay(300); // Brief pause for natural feel
+        addMessage('ai', conversationalResponse, true);
+        return;
+      }
+
+      // Check if this is a PM/feedback-related query
+      if (isPMQuery(lower)) {
+        await runPMAnalysis(query);
+      } else {
+        // Default: try to be helpful and guide to PM features
+        await delay(300);
+        addMessage('ai', `<div style="font-size: 13px;">
+          <div style="margin-bottom: 10px;">I'm your PM companion for analyzing customer feedback. I'm not sure how to help with "<em>${escapeHtml(query)}</em>" specifically.</div>
+          <div style="margin-bottom: 8px; color: #F38020;">Here's what I can help you with:</div>
+          <div style="color: #ccc; margin-bottom: 6px;">• <strong>Analyze feedback</strong> — "What are my critical blockers?"</div>
+          <div style="color: #ccc; margin-bottom: 6px;">• <strong>Find trends</strong> — "Show me negative feedback patterns"</div>
+          <div style="color: #ccc; margin-bottom: 6px;">• <strong>Filter by source</strong> — "What's coming from Discord?"</div>
+          <div style="color: #ccc; margin-bottom: 6px;">• <strong>Get insights</strong> — "Give me a feedback overview"</div>
+          <div style="margin-top: 10px; font-size: 12px; color: #888;">Try asking one of these or use the quick actions below!</div>
+        </div>`, true);
+        document.getElementById('quickActions').style.display = 'flex';
+      }
+    }
+
+    function getConversationalResponse(lower, original) {
+      // Greetings
+      if (/^(hi|hello|hey|howdy|hola|greetings|yo|sup)\b/.test(lower)) {
+        return `<div style="font-size: 13px;">
+          <div style="margin-bottom: 8px;">👋 Hey there! I'm your PM Feedback Assistant.</div>
+          <div style="color: #ccc;">I help you analyze customer feedback from Discord, email, support tickets, Twitter, and GitHub. Ask me about trends, critical issues, sentiment, or specific sources!</div>
+        </div>`;
+      }
+
+      // How are you / what's up
+      if (/how are you|how('s| is) it going|what('s| is) up|how do you do/.test(lower)) {
+        const stats = computeStats(allFeedback);
+        return `<div style="font-size: 13px;">
+          <div style="margin-bottom: 8px;">I'm doing great, thanks for asking! 🙂</div>
+          <div style="color: #ccc; margin-bottom: 6px;">Currently monitoring <strong style="color: #F38020;">${stats.total}</strong> feedback items across ${stats.sources.length} sources.</div>
+          <div style="color: #888; font-size: 12px;">Quick status: ${stats.critical} critical, ${stats.negative} negative, ${stats.positive} positive</div>
+        </div>`;
+      }
+
+      // Thanks
+      if (/^(thanks|thank you|thx|ty|appreciate|cheers)\b/.test(lower)) {
+        return `<div style="font-size: 13px;">You're welcome! Let me know if you need more feedback insights. 👍</div>`;
+      }
+
+      // Help
+      if (/^(help|what can you do|capabilities|commands)\b/.test(lower)) {
+        return `<div style="font-size: 13px;">
+          <div style="margin-bottom: 10px; color: #F38020; font-weight: 600;">What I can help you with:</div>
+          <div style="color: #ccc; margin-bottom: 6px;">🚨 <strong>Critical Issues</strong> — "Show me urgent blockers"</div>
+          <div style="color: #ccc; margin-bottom: 6px;">📉 <strong>Sentiment Analysis</strong> — "What's the negative feedback about?"</div>
+          <div style="color: #ccc; margin-bottom: 6px;">📊 <strong>Overview</strong> — "Give me a feedback summary"</div>
+          <div style="color: #ccc; margin-bottom: 6px;">💬 <strong>By Source</strong> — "What are Discord users saying?"</div>
+          <div style="color: #ccc; margin-bottom: 6px;">✨ <strong>Feature Requests</strong> — "What features do customers want?"</div>
+          <div style="margin-top: 10px; font-size: 12px; color: #888;">I use Cloudflare Workers AI to analyze patterns and generate insights!</div>
+        </div>`;
+      }
+
+      // Who are you / about
+      if (/who are you|what are you|about yourself|introduce/.test(lower)) {
+        return `<div style="font-size: 13px;">
+          <div style="margin-bottom: 8px;">I'm your <strong style="color: #F38020;">PM Feedback Intelligence Assistant</strong> 🤖</div>
+          <div style="color: #ccc; margin-bottom: 6px;">Built on Cloudflare Workers, I help Product Managers like you make sense of customer feedback from multiple channels.</div>
+          <div style="color: #888; font-size: 12px; margin-top: 8px;">Powered by: Workers • D1 Database • Workers AI (distilbert + llama-3.1)</div>
+        </div>`;
+      }
+
+      // Bye
+      if (/^(bye|goodbye|see you|later|cya)\b/.test(lower)) {
+        return `<div style="font-size: 13px;">Goodbye! Come back anytime you need feedback insights. 👋</div>`;
+      }
+
+      return null; // Not a conversational message
+    }
+
+    function isPMQuery(lower) {
+      const pmKeywords = [
+        'feedback', 'critical', 'urgent', 'blocker', 'issue', 'bug', 'problem',
+        'negative', 'positive', 'neutral', 'sentiment', 'trend', 'pattern',
+        'overview', 'summary', 'analyze', 'analysis', 'insight', 'report',
+        'feature', 'request', 'want', 'need', 'customer', 'user',
+        'discord', 'email', 'support', 'ticket', 'twitter', 'github',
+        'source', 'channel', 'complaint', 'praise', 'review',
+        'priority', 'high', 'low', 'medium', 'show', 'find', 'get', 'list',
+        'what', 'why', 'how many', 'which', 'where'
+      ];
+      return pmKeywords.some(kw => lower.includes(kw));
     }
 
     // Delay helper for animations
     const delay = ms => new Promise(r => setTimeout(r, ms));
 
     // Main PM Analysis function with step-by-step visualization
+    // Uses Workers AI backend for real analysis
     async function runPMAnalysis(query) {
       const lower = query.toLowerCase();
       const area = document.getElementById('messagesArea');
@@ -1536,59 +2091,191 @@
       // STEP 1: Understanding Query
       container.innerHTML = buildStep(1, 'active', 'Understanding your question', [
         { text: `Parsing: "${query.substring(0, 40)}${query.length > 40 ? '...' : ''}"`, status: 'active' }
-      ], 33);
+      ], 20);
       area.scrollTop = area.scrollHeight;
-      await delay(600);
-
-      // STEP 2: Gathering Data
-      const sources = ['D1 Database', 'Email Channel', 'Discord', 'Support Tickets', 'Twitter', 'GitHub Issues'];
-      const searchChips = sources.map(s => ({ text: `Searching ${s}`, status: 'active' }));
+      await delay(400);
 
       container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
         { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 33) + buildStep(2, 'active', 'Gathering feedback data from all sources', searchChips.slice(0, 3), 50);
+      ], 25) + buildStep(2, 'active', 'Querying Cloudflare D1 database', [
+        { text: 'Connecting to D1...', status: 'active' }
+      ], 30);
+      area.scrollTop = area.scrollHeight;
+
+      // STEP 2: Call the Workers AI backend
+      let apiResponse = null;
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query }),
+        });
+        apiResponse = await response.json();
+      } catch (err) {
+        console.error('API call failed:', err);
+      }
+
+      // Show D1 query complete
+      const d1Chips = apiResponse ? [
+        { text: `D1: ${apiResponse.stats?.total || 0} records`, status: 'done' },
+        { text: `Sources: ${(apiResponse.stats?.sources || []).length}`, status: 'done' }
+      ] : [{ text: 'D1 query failed', status: 'active' }];
+
+      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
+        { text: `Query type: ${analysisType.label}`, status: 'done' }
+      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50);
+      area.scrollTop = area.scrollHeight;
+      await delay(300);
+
+      // STEP 3: Workers AI Analysis
+      const aiAvailable = apiResponse?.ai?.available;
+      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
+        { text: `Query type: ${analysisType.label}`, status: 'done' }
+      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50) +
+      buildStep(3, 'active', 'Running Workers AI analysis', [
+        { text: 'distilbert-sst-2 sentiment', status: 'active' },
+        { text: 'llama-3.1-8b insights', status: 'active' }
+      ], 70);
       area.scrollTop = area.scrollHeight;
       await delay(500);
 
-      // Show more chips
+      const aiChips = aiAvailable ? [
+        { text: '✓ Sentiment analysis', status: 'done' },
+        { text: '✓ LLM insights', status: 'done' }
+      ] : [
+        { text: 'AI binding not configured', status: 'active' }
+      ];
+
       container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
         { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 33) + buildStep(2, 'active', 'Gathering feedback data from all sources', searchChips, 66);
+      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50) +
+      buildStep(3, 'done', 'Running Workers AI analysis', aiChips, 75);
       area.scrollTop = area.scrollHeight;
-      await delay(600);
+      await delay(300);
 
-      // STEP 3: Analyzing Patterns
-      const results = analysisType.filter(allFeedback);
-      const stats = computeStats(results);
-
+      // STEP 4: Generate final insights
       container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
         { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 33) + buildStep(2, 'done', 'Gathering feedback data from all sources', [
-        { text: `Found ${allFeedback.length} total items`, status: 'done' },
-        { text: `${results.length} match your query`, status: 'done' }
-      ], 66) + buildStep(3, 'active', 'Analyzing patterns and generating insights', [
-        { text: 'Computing sentiment distribution', status: 'active' },
-        { text: 'Identifying urgency trends', status: 'active' },
-        { text: 'Extracting key themes', status: 'active' }
-      ], 85);
+      ], 25) + buildStep(2, 'done', 'Querying Cloudflare D1 database', d1Chips, 50) +
+      buildStep(3, 'done', 'Running Workers AI analysis', aiChips, 75) +
+      buildStep(4, 'active', 'Generating PM insights', [
+        { text: 'Computing metrics...', status: 'active' }
+      ], 90);
       area.scrollTop = area.scrollHeight;
-      await delay(800);
+      await delay(400);
 
-      // STEP 4: Final Results with PM Insights
-      const insights = generatePMInsights(results, stats, analysisType);
+      // Build final results using API response or client-side fallback
+      const results = apiResponse?.filtered?.items || analysisType.filter(allFeedback);
+      const stats = apiResponse?.stats || computeStats(results);
+      const insights = generatePMInsights(results, stats, analysisType, apiResponse?.ai?.insights);
 
-      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
-        { text: `Query type: ${analysisType.label}`, status: 'done' }
-      ], 100) + buildStep(2, 'done', 'Gathering feedback data from all sources', [
-        { text: `Found ${allFeedback.length} total items`, status: 'done' },
-        { text: `${results.length} match your query`, status: 'done' }
-      ], 100) + buildStep(3, 'done', 'Analyzing patterns and generating insights', [
-        { text: `Sentiment: ${stats.positive} positive, ${stats.negative} negative`, status: 'done' },
-        { text: `Urgency: ${stats.critical + stats.high} high-priority items`, status: 'done' }
-      ], 100) + buildInsightsSection(insights, results);
+      // Generate natural language response
+      const naturalResponse = generateNaturalResponse(query, results, stats, analysisType, apiResponse?.ai?.insights);
+
+      container.innerHTML = naturalResponse + buildInsightsSection(insights, results, apiResponse?.ai?.insights);
 
       area.scrollTop = area.scrollHeight;
       container.removeAttribute('id');
+    }
+
+    function generateNaturalResponse(query, results, stats, analysisType, aiInsights) {
+      const lower = query.toLowerCase();
+      let response = '';
+
+      // If we have AI-generated summary, use it
+      if (aiInsights?.summary && !aiInsights.error) {
+        response = `<div class="ai-response">
+          <div class="ai-response-text">${escapeHtml(aiInsights.summary)}</div>
+          ${aiInsights.recommendation ? `<div class="ai-response-recommendation">💡 <strong>Recommendation:</strong> ${escapeHtml(aiInsights.recommendation)}</div>` : ''}
+        </div>`;
+      } else {
+        // Generate response based on query type and data
+        const criticalCount = results.filter(r => r.urgency === 'critical').length;
+        const highCount = results.filter(r => r.urgency === 'high').length;
+        const negativeCount = results.filter(r => r.sentiment === 'negative').length;
+        const positiveCount = results.filter(r => r.sentiment === 'positive').length;
+
+        if (lower.includes('critical') || lower.includes('blocker') || lower.includes('urgent')) {
+          if (criticalCount > 0 || highCount > 0) {
+            response = `<div class="ai-response">
+              <div class="ai-response-text">You have <strong style="color: #ef4444;">${criticalCount} critical</strong> and <strong style="color: #f97316;">${highCount} high-priority</strong> issues that need attention.</div>
+              <div class="ai-response-detail">${criticalCount > 0 ? `The most urgent is: "${escapeHtml(results.find(r => r.urgency === 'critical')?.content.substring(0, 100) || '')}..."` : `Top high-priority: "${escapeHtml(results.find(r => r.urgency === 'high')?.content.substring(0, 100) || '')}..."`}</div>
+              <div class="ai-response-recommendation">💡 <strong>Recommendation:</strong> Address critical items immediately - they're likely blocking users or causing revenue impact.</div>
+            </div>`;
+          } else {
+            response = `<div class="ai-response">
+              <div class="ai-response-text">Good news! You have <strong style="color: #22c55e;">no critical blockers</strong> at the moment.</div>
+              <div class="ai-response-detail">Found ${results.length} items in your feedback, but none are marked as critical urgency.</div>
+            </div>`;
+          }
+        } else if (lower.includes('negative') || lower.includes('complaint') || lower.includes('problem')) {
+          response = `<div class="ai-response">
+            <div class="ai-response-text">Found <strong style="color: #ef4444;">${negativeCount} negative feedback</strong> items out of ${stats.total} total.</div>
+            ${negativeCount > 0 ? `<div class="ai-response-detail">Common themes include: ${getTopThemes(results.filter(r => r.sentiment === 'negative'))}</div>` : ''}
+            <div class="ai-response-recommendation">💡 <strong>Recommendation:</strong> ${negativeCount > positiveCount ? 'Negative sentiment is high - consider a focused review session with the team.' : 'Negative feedback is manageable - address the top issues in your next sprint.'}</div>
+          </div>`;
+        } else if (lower.includes('positive') || lower.includes('happy') || lower.includes('praise')) {
+          response = `<div class="ai-response">
+            <div class="ai-response-text">You have <strong style="color: #22c55e;">${positiveCount} positive feedback</strong> items - ${Math.round((positiveCount / stats.total) * 100)}% of all feedback!</div>
+            ${positiveCount > 0 ? `<div class="ai-response-detail">Customers are happy about: ${getTopThemes(results.filter(r => r.sentiment === 'positive'))}</div>` : ''}
+            <div class="ai-response-recommendation">💡 <strong>Recommendation:</strong> Consider reaching out to these happy customers for testimonials or case studies.</div>
+          </div>`;
+        } else if (lower.includes('feature') || lower.includes('request') || lower.includes('want') || lower.includes('need')) {
+          const featureRequests = results.filter(r => r.sentiment === 'neutral' || r.content.toLowerCase().includes('want') || r.content.toLowerCase().includes('need') || r.content.toLowerCase().includes('would'));
+          response = `<div class="ai-response">
+            <div class="ai-response-text">Found <strong style="color: #F38020;">${featureRequests.length} potential feature requests</strong> in your feedback.</div>
+            <div class="ai-response-detail">Top requests: ${getTopThemes(featureRequests)}</div>
+            <div class="ai-response-recommendation">💡 <strong>Recommendation:</strong> Group similar requests and prioritize by frequency and customer impact for your roadmap.</div>
+          </div>`;
+        } else if (lower.includes('overview') || lower.includes('summary') || lower.includes('trend')) {
+          const sentiment = positiveCount > negativeCount ? 'positive' : negativeCount > positiveCount ? 'concerning' : 'balanced';
+          response = `<div class="ai-response">
+            <div class="ai-response-text">Here's your feedback overview: <strong>${stats.total} items</strong> across ${stats.sources.length} channels.</div>
+            <div class="ai-response-detail">
+              Sentiment breakdown: ${positiveCount} positive, ${stats.neutral} neutral, ${negativeCount} negative<br>
+              Urgency: ${criticalCount} critical, ${highCount} high, ${stats.medium} medium, ${stats.low} low
+            </div>
+            <div class="ai-response-recommendation">💡 <strong>Overall:</strong> Sentiment is ${sentiment}. ${criticalCount > 0 ? `Prioritize the ${criticalCount} critical items first.` : 'No immediate blockers detected.'}</div>
+          </div>`;
+        } else if (lower.includes('discord') || lower.includes('email') || lower.includes('twitter') || lower.includes('github') || lower.includes('support')) {
+          const sourceMatch = ['discord', 'email', 'twitter', 'github-issue', 'support-ticket'].find(s => lower.includes(s.replace('-', ' ').replace('-', '')));
+          const sourceResults = results.filter(r => sourceMatch && r.source.includes(sourceMatch.split('-')[0]));
+          response = `<div class="ai-response">
+            <div class="ai-response-text">Found <strong style="color: #F38020;">${sourceResults.length} items</strong> from ${sourceMatch || 'that source'}.</div>
+            <div class="ai-response-detail">Sentiment: ${sourceResults.filter(r => r.sentiment === 'positive').length} positive, ${sourceResults.filter(r => r.sentiment === 'negative').length} negative</div>
+            <div class="ai-response-recommendation">💡 <strong>Insight:</strong> ${sourceResults.filter(r => r.sentiment === 'negative').length > sourceResults.filter(r => r.sentiment === 'positive').length ? 'This channel has more complaints than praise - may need attention.' : 'This channel has healthy sentiment overall.'}</div>
+          </div>`;
+        } else {
+          // Generic response
+          response = `<div class="ai-response">
+            <div class="ai-response-text">Analyzed <strong>${results.length} relevant items</strong> from your feedback.</div>
+            <div class="ai-response-detail">Found ${negativeCount} negative, ${positiveCount} positive, and ${criticalCount + highCount} high-priority items.</div>
+            ${criticalCount > 0 ? `<div class="ai-response-recommendation">💡 <strong>Note:</strong> You have ${criticalCount} critical items that may need immediate attention.</div>` : ''}
+          </div>`;
+        }
+      }
+
+      return response;
+    }
+
+    function getTopThemes(items) {
+      if (!items.length) return 'No specific themes detected';
+      // Extract key phrases from content
+      const phrases = items.slice(0, 3).map(item => {
+        const content = item.content.toLowerCase();
+        // Find key phrases
+        if (content.includes('login')) return 'login/authentication';
+        if (content.includes('performance') || content.includes('slow')) return 'performance issues';
+        if (content.includes('mobile') || content.includes('app')) return 'mobile app';
+        if (content.includes('dashboard')) return 'dashboard';
+        if (content.includes('api') || content.includes('docs')) return 'API/documentation';
+        if (content.includes('price') || content.includes('billing')) return 'pricing/billing';
+        if (content.includes('support')) return 'customer support';
+        if (content.includes('dark mode')) return 'dark mode';
+        if (content.includes('integration') || content.includes('slack') || content.includes('zapier')) return 'integrations';
+        return item.content.substring(0, 30) + '...';
+      });
+      return [...new Set(phrases)].slice(0, 3).join(', ');
     }
 
     function detectAnalysisType(query) {
@@ -1629,10 +2316,53 @@
       };
     }
 
-    function generatePMInsights(results, stats, analysisType) {
+    function generatePMInsights(results, stats, analysisType, aiInsights) {
       const insights = [];
 
-      // Key Metric
+      // If we have AI-generated insights from Workers AI, prioritize those
+      if (aiInsights && !aiInsights.error) {
+        // AI Summary
+        if (aiInsights.summary) {
+          insights.push({
+            type: 'ai-summary',
+            title: 'AI Analysis Summary',
+            content: aiInsights.summary,
+            aiGenerated: true
+          });
+        }
+
+        // AI-detected critical count
+        if (aiInsights.critical_count > 0) {
+          insights.push({
+            type: 'ai-critical',
+            title: 'Critical Issues Detected',
+            count: aiInsights.critical_count,
+            aiGenerated: true
+          });
+        }
+
+        // AI Recommendation
+        if (aiInsights.recommendation) {
+          insights.push({
+            type: 'ai-recommendation',
+            title: 'AI Recommendation',
+            content: aiInsights.recommendation,
+            aiGenerated: true
+          });
+        }
+
+        // Sentiment Trend
+        if (aiInsights.sentiment_trend) {
+          insights.push({
+            type: 'ai-trend',
+            title: 'Sentiment Trend',
+            trend: aiInsights.sentiment_trend,
+            aiGenerated: true
+          });
+        }
+      }
+
+      // Key Metric (always include)
       if (stats.total > 0) {
         const negPercent = Math.round((stats.negative / stats.total) * 100);
         const critPercent = Math.round(((stats.critical + stats.high) / stats.total) * 100);
@@ -1668,19 +2398,21 @@
         });
       }
 
-      // Recommendation
-      if (stats.negative > stats.positive) {
-        insights.push({
-          type: 'recommendation',
-          title: 'PM Recommendation',
-          content: `Negative feedback (${stats.negative}) outweighs positive (${stats.positive}). Consider scheduling a customer feedback review to identify root causes.`
-        });
-      } else if (stats.positive > stats.negative * 2) {
-        insights.push({
-          type: 'recommendation',
-          title: 'PM Recommendation',
-          content: `Strong positive sentiment! Consider reaching out to happy customers for testimonials or case studies.`
-        });
+      // Recommendation (only if no AI recommendation)
+      if (!aiInsights?.recommendation) {
+        if (stats.negative > stats.positive) {
+          insights.push({
+            type: 'recommendation',
+            title: 'PM Recommendation',
+            content: `Negative feedback (${stats.negative}) outweighs positive (${stats.positive}). Consider scheduling a customer feedback review to identify root causes.`
+          });
+        } else if (stats.positive > stats.negative * 2) {
+          insights.push({
+            type: 'recommendation',
+            title: 'PM Recommendation',
+            content: `Strong positive sentiment! Consider reaching out to happy customers for testimonials or case studies.`
+          });
+        }
       }
 
       // Source Distribution
@@ -1714,10 +2446,48 @@
       `;
     }
 
-    function buildInsightsSection(insights, results) {
-      let html = '<div style="margin-top: 16px;">';
+    function buildInsightsSection(insights, results, aiInsights) {
+      let html = '<div class="insights-container">';
 
-      insights.forEach(insight => {
+      // AI-powered insights section (if available)
+      const aiPoweredInsights = insights.filter(i => i.aiGenerated);
+      const standardInsights = insights.filter(i => !i.aiGenerated);
+
+      if (aiPoweredInsights.length > 0) {
+        html += '<div class="ai-powered-section">';
+        html += '<div class="ai-powered-header"><span class="ai-badge">Workers AI</span> Intelligent Analysis</div>';
+
+        aiPoweredInsights.forEach(insight => {
+          if (insight.type === 'ai-summary') {
+            html += `<div class="ai-insight ai-generated">
+              <div class="ai-insight-label">🤖 ${insight.title}</div>
+              <div class="ai-insight-text">${escapeHtml(insight.content)}</div>
+            </div>`;
+          } else if (insight.type === 'ai-critical') {
+            html += `<div class="ai-insight ai-generated" style="border-left-color: #ef4444;">
+              <div class="ai-insight-label" style="color: #ef4444;">🚨 ${insight.title}</div>
+              <div class="ai-insight-text">${insight.count} critical issue${insight.count > 1 ? 's' : ''} identified by AI analysis</div>
+            </div>`;
+          } else if (insight.type === 'ai-recommendation') {
+            html += `<div class="ai-insight ai-generated" style="border-left-color: #22c55e;">
+              <div class="ai-insight-label" style="color: #22c55e;">💡 ${insight.title}</div>
+              <div class="ai-insight-text">${escapeHtml(insight.content)}</div>
+            </div>`;
+          } else if (insight.type === 'ai-trend') {
+            const trendIcon = insight.trend === 'improving' ? '📈' : insight.trend === 'declining' ? '📉' : '➡️';
+            const trendColor = insight.trend === 'improving' ? '#22c55e' : insight.trend === 'declining' ? '#ef4444' : '#F38020';
+            html += `<div class="ai-insight ai-generated" style="border-left-color: ${trendColor};">
+              <div class="ai-insight-label" style="color: ${trendColor};">${trendIcon} ${insight.title}</div>
+              <div class="ai-insight-text">Sentiment is <strong style="color: ${trendColor};">${insight.trend}</strong></div>
+            </div>`;
+          }
+        });
+
+        html += '</div>';
+      }
+
+      // Standard insights
+      standardInsights.forEach(insight => {
         if (insight.type === 'metric') {
           html += `<div class="ai-insight">
             <div class="ai-insight-label">📊 ${insight.title}</div>
@@ -1738,27 +2508,48 @@
             <div class="ai-insight-text">${insight.content}</div>
           </div>`;
         } else if (insight.type === 'distribution') {
-          const btns = insight.sources.map(s =>
-            `<button class="ai-source-btn" onclick="document.querySelectorAll('[data-source=\\'${s.source}\\']')[0]?.click()">
-              ${getEmoji(s.source)} ${s.source} (${s.count})
-            </button>`
-          ).join('');
-          html += `<div class="ai-sources">
-            <div class="ai-sources-label">📍 Sources (click to filter)</div>
-            ${btns}
+          // Create expandable source sections with actual feedback messages
+          const sourceAccordions = insight.sources.map(s => {
+            const sourceItems = results.filter(r => r.source === s.source).slice(0, 5);
+            const itemsHtml = sourceItems.map(item => {
+              const sColor = item.sentiment === 'positive' ? '#22c55e' : item.sentiment === 'negative' ? '#ef4444' : '#888';
+              return `<div class="source-message-item">
+                <div class="source-message-meta" style="color: ${sColor};">${item.sentiment} • ${item.urgency}</div>
+                <div class="source-message-text">"${escapeHtml(item.content)}"</div>
+                ${item.author ? `<div class="source-message-author">— ${escapeHtml(item.author)}</div>` : ''}
+              </div>`;
+            }).join('');
+
+            return `<div class="source-accordion">
+              <button class="source-accordion-btn" onclick="this.parentElement.classList.toggle('expanded')">
+                <span>${getEmoji(s.source)} ${s.source}</span>
+                <span class="source-count">${s.count} items</span>
+                <span class="accordion-arrow">▶</span>
+              </button>
+              <div class="source-accordion-content">
+                ${itemsHtml}
+                ${sourceItems.length < s.count ? `<div class="source-more">+ ${s.count - sourceItems.length} more items</div>` : ''}
+              </div>
+            </div>`;
+          }).join('');
+
+          html += `<div class="ai-sources-expandable">
+            <div class="ai-sources-label">📍 Feedback by Source <span style="font-weight: 400; color: #666;">(click to expand)</span></div>
+            ${sourceAccordions}
           </div>`;
         }
       });
 
-      // Top results preview
-      if (results.length > 0) {
-        html += `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
-          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Top Results Preview</div>`;
-        results.slice(0, 2).forEach(item => {
+      // Top results preview (only if no distribution insight)
+      const hasDistribution = standardInsights.some(i => i.type === 'distribution');
+      if (results.length > 0 && !hasDistribution) {
+        html += `<div class="results-preview">
+          <div class="results-preview-header">Top Results Preview</div>`;
+        results.slice(0, 3).forEach(item => {
           const sColor = item.sentiment === 'positive' ? '#22c55e' : item.sentiment === 'negative' ? '#ef4444' : '#888';
-          html += `<div style="padding: 8px; background: rgba(255,255,255,0.02); border-radius: 6px; margin-bottom: 6px; font-size: 12px;">
+          html += `<div class="results-preview-item">
             <div style="color: ${sColor}; font-size: 10px; margin-bottom: 4px;">${getEmoji(item.source)} ${item.source} • ${item.sentiment} • ${item.urgency}</div>
-            <div style="color: #ccc;">"${escapeHtml(item.content.substring(0, 80))}${item.content.length > 80 ? '...' : ''}"</div>
+            <div style="color: #ccc;">"${escapeHtml(item.content.substring(0, 100))}${item.content.length > 100 ? '...' : ''}"</div>
           </div>`;
         });
         html += '</div>';

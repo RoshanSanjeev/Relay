@@ -17,6 +17,9 @@
 	"observability": {
 		"enabled": true
 	},
+	"ai": {
+		"binding": "AI"
+	},
 	"d1_databases": [
 		{
 			"binding": "D1_DB",

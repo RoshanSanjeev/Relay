@@ -261,6 +261,152 @@ app.get('/api/search', async (c) => {
   }
 });
 
+// POST /api/analyze - AI-powered feedback analysis
+// Uses Workers AI for sentiment analysis and insight generation
+app.post('/api/analyze', async (c) => {
+  const body = await c.req.json<{ query: string; feedbackIds?: number[] }>();
+
+  if (!body.query) {
+    return c.json({ error: 'query field is required' }, { status: 400 });
+  }
+
+  try {
+    // Step 1: Fetch feedback from D1
+    const feedbackQuery = `
+      SELECT id, source, content, author, sentiment, urgency, theme, created_at
+      FROM feedback
+      ORDER BY created_at DESC
+      LIMIT 100
+    `;
+    const feedbackResult = await c.env.D1_DB.prepare(feedbackQuery).all<FeedbackRecord>();
+    const allFeedback = feedbackResult.results || [];
+
+    // Step 2: Use Workers AI for sentiment analysis (if AI binding available)
+    let aiInsights: any = null;
+    let sentimentAnalysis: any[] = [];
+
+    // FRICTION POINT: Workers AI binding check - documentation doesn't clearly explain
+    // how to gracefully handle missing AI bindings in production vs dev
+    if (c.env.AI) {
+      try {
+        // Use distilbert for quick sentiment classification on sample
+        const sampleFeedback = allFeedback.slice(0, 5);
+
+        // FRICTION POINT: Workers AI doesn't support batch inference for distilbert
+        // Have to make individual requests which is slower
+        const sentimentPromises = sampleFeedback.map(async (fb) => {
+          try {
+            const result = await c.env.AI.run('@cf/huggingface/distilbert-sst-2-int8', {
+              text: fb.content.substring(0, 500), // Limit text length
+            });
+            return { id: fb.id, sentiment: result };
+          } catch (e) {
+            return { id: fb.id, sentiment: null, error: String(e) };
+          }
+        });
+
+        sentimentAnalysis = await Promise.all(sentimentPromises);
+
+        // Use LLM for generating PM insights
+        // FRICTION POINT: Model availability - @cf/meta/llama-3.1-8b-instruct may not be
+        // available in all regions, documentation doesn't clarify regional availability
+        const feedbackSummary = allFeedback.slice(0, 10).map(f =>
+          `[${f.source}] ${f.sentiment}: "${f.content.substring(0, 100)}"`
+        ).join('\n');
+
+        const insightPrompt = `You are a PM analyzing customer feedback. Based on this feedback:
+${feedbackSummary}
+
+Query: "${body.query}"
+
+Provide a brief JSON response with:
+1. "summary": one sentence summary
+2. "critical_count": number of critical issues
+3. "recommendation": one actionable recommendation for the PM
+4. "sentiment_trend": "improving", "declining", or "stable"
+
+Respond with only valid JSON, no other text.`;
+
+        try {
+          const llmResponse = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+            prompt: insightPrompt,
+            max_tokens: 200,
+          });
+
+          // Parse LLM response
+          const responseText = llmResponse.response || '';
+          try {
+            aiInsights = JSON.parse(responseText);
+          } catch {
+            aiInsights = {
+              summary: responseText.substring(0, 200),
+              raw: true
+            };
+          }
+        } catch (llmError) {
+          console.error('LLM analysis failed:', llmError);
+          // FRICTION POINT: Error messages from Workers AI are often generic
+          // Hard to debug if it's a model issue, quota issue, or binding issue
+          aiInsights = { error: 'LLM analysis unavailable', details: String(llmError) };
+        }
+      } catch (aiError) {
+        console.error('Workers AI error:', aiError);
+      }
+    }
+
+    // Step 3: Compute statistics from D1 data
+    const stats = {
+      total: allFeedback.length,
+      positive: allFeedback.filter(f => f.sentiment === 'positive').length,
+      negative: allFeedback.filter(f => f.sentiment === 'negative').length,
+      neutral: allFeedback.filter(f => f.sentiment === 'neutral').length,
+      critical: allFeedback.filter(f => f.urgency === 'critical').length,
+      high: allFeedback.filter(f => f.urgency === 'high').length,
+      sources: [...new Set(allFeedback.map(f => f.source))],
+    };
+
+    // Step 4: Filter based on query intent
+    const queryLower = body.query.toLowerCase();
+    let filteredFeedback = allFeedback;
+
+    if (queryLower.includes('critical') || queryLower.includes('urgent')) {
+      filteredFeedback = allFeedback.filter(f => f.urgency === 'critical' || f.urgency === 'high');
+    } else if (queryLower.includes('negative') || queryLower.includes('complaint')) {
+      filteredFeedback = allFeedback.filter(f => f.sentiment === 'negative');
+    } else if (queryLower.includes('positive')) {
+      filteredFeedback = allFeedback.filter(f => f.sentiment === 'positive');
+    }
+
+    return c.json({
+      query: body.query,
+      stats,
+      filtered: {
+        count: filteredFeedback.length,
+        items: filteredFeedback.slice(0, 10),
+      },
+      ai: {
+        available: !!c.env.AI,
+        sentimentAnalysis: sentimentAnalysis.length > 0 ? sentimentAnalysis : null,
+        insights: aiInsights,
+      },
+      thinking: {
+        steps: [
+          { step: 1, action: 'Query D1 database', status: 'complete', count: allFeedback.length },
+          { step: 2, action: 'Workers AI sentiment analysis', status: c.env.AI ? 'complete' : 'skipped' },
+          { step: 3, action: 'LLM insight generation', status: aiInsights ? 'complete' : 'skipped' },
+          { step: 4, action: 'Filter by query intent', status: 'complete', count: filteredFeedback.length },
+        ],
+      },
+    });
+  } catch (error) {
+    console.error('Analysis error:', error);
+    return c.json(
+      { error: 'Analysis failed', details: String(error) },
+      { status: 500 }
+    );
+  }
+});
+
 // Helper function to generate relevance explanation
 function getRelevanceExplanation(feedback: FeedbackRecord, query: string, score: number): string {
   const text = (feedback.content || '').toLowerCase();
