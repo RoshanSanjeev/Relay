@@ -801,6 +801,213 @@
       margin-bottom: 16px;
     }
 
+    /* ========== AI ANALYSIS STEPS ========== */
+    .ai-analysis {
+      padding: 16px;
+      background: rgba(20, 20, 20, 0.6);
+      border-radius: 12px;
+      border: 1px solid rgba(243, 128, 32, 0.1);
+    }
+
+    .ai-step {
+      margin-bottom: 16px;
+      padding-left: 36px;
+      position: relative;
+    }
+
+    .ai-step:last-child { margin-bottom: 0; }
+
+    .ai-step::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 28px;
+      bottom: -16px;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .ai-step:last-child::before { display: none; }
+
+    .ai-step-num {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.1);
+      color: #666;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .ai-step-num.active {
+      background: rgba(243, 128, 32, 0.2);
+      color: #F38020;
+      border: 2px solid #F38020;
+      animation: stepPulse 1.5s ease-in-out infinite;
+    }
+
+    .ai-step-num.done {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+      border: 2px solid #22c55e;
+    }
+
+    @keyframes stepPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(243, 128, 32, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(243, 128, 32, 0); }
+    }
+
+    .ai-step-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e5e5;
+      margin-bottom: 6px;
+    }
+
+    .ai-step.pending .ai-step-title { color: #666; }
+
+    .ai-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .ai-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      background: rgba(243, 128, 32, 0.08);
+      border: 1px solid rgba(243, 128, 32, 0.15);
+      border-radius: 14px;
+      font-size: 11px;
+      color: #aaa;
+      animation: chipIn 0.3s ease forwards;
+    }
+
+    @keyframes chipIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .ai-chip.done {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+
+    .ai-chip.active {
+      background: rgba(243, 128, 32, 0.15);
+      border-color: rgba(243, 128, 32, 0.3);
+      color: #F38020;
+    }
+
+    .ai-progress {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .ai-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #F38020, #22c55e);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .ai-insight {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(243, 128, 32, 0.05);
+      border-left: 3px solid #F38020;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .ai-insight-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #F38020;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .ai-insight-text {
+      font-size: 13px;
+      color: #d5d5d5;
+      line-height: 1.5;
+    }
+
+    .ai-action {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+    }
+
+    .ai-priority {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .ai-priority.p1 { background: rgba(220, 38, 38, 0.2); color: #dc2626; }
+    .ai-priority.p2 { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+    .ai-priority.p3 { background: rgba(234, 179, 8, 0.2); color: #eab308; }
+
+    .ai-action-text {
+      font-size: 12px;
+      color: #ccc;
+      line-height: 1.4;
+    }
+
+    .ai-sources {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .ai-sources-label {
+      font-size: 10px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .ai-source-btn {
+      background: rgba(243, 128, 32, 0.1);
+      border: 1px solid rgba(243, 128, 32, 0.2);
+      color: #F38020;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      margin: 0 6px 6px 0;
+      transition: all 0.2s ease;
+    }
+
+    .ai-source-btn:hover {
+      background: rgba(243, 128, 32, 0.2);
+      transform: translateY(-1px);
+    }
+
     /* ========== LOADING ========== */
     .spinner {
       display: inline-block;
@@ -875,11 +1082,11 @@
           <div class="messages-area" id="messagesArea"></div>
 
           <div class="quick-actions" id="quickActions">
-            <div class="quick-action-label">Quick Actions</div>
-            <button class="quick-action-btn" data-prompt="What are my critical feedback items?">🔴 Critical Issues</button>
-            <button class="quick-action-btn" data-prompt="Show me negative feedback">😠 Negative Feedback</button>
-            <button class="quick-action-btn" data-prompt="What's coming from Discord?">💬 Discord Messages</button>
-            <button class="quick-action-btn" data-prompt="Summarize support tickets">🎫 Support Summary</button>
+            <div class="quick-action-label">PM Quick Actions</div>
+            <button class="quick-action-btn" data-prompt="What are my critical blockers that need immediate attention?">🚨 Critical Blockers</button>
+            <button class="quick-action-btn" data-prompt="Give me an overview of negative feedback trends and patterns">📉 Negative Trends</button>
+            <button class="quick-action-btn" data-prompt="What feature requests are customers asking for?">✨ Feature Requests</button>
+            <button class="quick-action-btn" data-prompt="Show me a summary of all feedback sources and sentiment distribution">📊 Feedback Overview</button>
           </div>
         </div>
 
@@ -1128,7 +1335,14 @@
       updateCounts();
       displayFeedback();
       setupEventListeners();
-      addMessage('ai', 'Welcome! Ask me about your feedback. Try "What are my critical issues?" or "Show negative feedback"');
+      addMessage('ai', `<div style="font-size: 13px;">
+        <div style="margin-bottom: 8px;">👋 <strong>Welcome, PM!</strong> I can help you analyze customer feedback and surface actionable insights.</div>
+        <div style="color: #888; font-size: 12px; margin-bottom: 8px;">Try asking me:</div>
+        <div style="color: #F38020; font-size: 12px;">• "What are my critical blockers?"</div>
+        <div style="color: #F38020; font-size: 12px;">• "Show negative feedback trends"</div>
+        <div style="color: #F38020; font-size: 12px;">• "What features are customers requesting?"</div>
+        <div style="color: #F38020; font-size: 12px;">• "Give me a feedback overview"</div>
+      </div>`, true);
     }
 
     async function loadFeedback() {
@@ -1297,111 +1511,261 @@
       input.value = '';
       document.getElementById('quickActions').style.display = 'none';
 
+      // Start the animated analysis
+      await runPMAnalysis(query);
+    }
+
+    // Delay helper for animations
+    const delay = ms => new Promise(r => setTimeout(r, ms));
+
+    // Main PM Analysis function with step-by-step visualization
+    async function runPMAnalysis(query) {
       const lower = query.toLowerCase();
-      let searchFilters = [];
-      let results = [];
+      const area = document.getElementById('messagesArea');
 
-      // Show thinking process
-      const thinking = [
-        '🔍 Analyzing your query...',
-        '📊 Searching through feedback database...'
-      ];
+      // Create analysis container
+      const analysisDiv = document.createElement('div');
+      analysisDiv.className = 'message ai';
+      analysisDiv.innerHTML = `<div class="bubble ai-analysis" id="currentAnalysis"></div>`;
+      area.appendChild(analysisDiv);
+      const container = document.getElementById('currentAnalysis');
 
-      let searchType = '';
+      // Determine analysis type
+      let analysisType = detectAnalysisType(lower);
 
-      if (lower.includes('critical') || lower.includes('urgent') || lower.includes('priority')) {
-        searchFilters = ['urgency = critical', 'sentiment = negative', 'source = support-ticket'];
-        results = allFeedback.filter(f => f.urgency === 'critical' || f.sentiment === 'negative' || f.source === 'support-ticket');
-        searchType = 'Critical Feedback';
-        thinking.push('⚡ Filtering for critical and urgent items...');
-      } else if (lower.includes('high urgency') || lower.includes('high priority')) {
-        searchFilters = ['urgency >= high'];
-        results = allFeedback.filter(f => f.urgency === 'high' || f.urgency === 'critical');
-        searchType = 'High Urgency Items';
-        thinking.push('⚡ Filtering for high urgency items...');
-      } else if (lower.includes('negative') || lower.includes('complaint')) {
-        searchFilters = ['sentiment = negative'];
-        results = allFeedback.filter(f => f.sentiment === 'negative');
-        searchType = 'Negative Feedback';
-        thinking.push('😠 Finding complaints and negative feedback...');
-      } else if (lower.includes('positive') || lower.includes('happy')) {
-        searchFilters = ['sentiment = positive'];
-        results = allFeedback.filter(f => f.sentiment === 'positive');
-        searchType = 'Positive Feedback';
-        thinking.push('😊 Finding praise and positive comments...');
-      } else if (lower.includes('discord')) {
-        searchFilters = ['source = discord'];
-        results = allFeedback.filter(f => f.source === 'discord');
-        searchType = 'Discord Messages';
-        thinking.push('💬 Querying Discord channel...');
-      } else if (lower.includes('email')) {
-        searchFilters = ['source = email'];
-        results = allFeedback.filter(f => f.source === 'email');
-        searchType = 'Email Feedback';
-        thinking.push('📧 Searching email inbox...');
-      } else if (lower.includes('support') || lower.includes('ticket')) {
-        searchFilters = ['source = support-ticket'];
-        results = allFeedback.filter(f => f.source === 'support-ticket');
-        searchType = 'Support Tickets';
-        thinking.push('🎫 Checking support system...');
-      } else {
-        results = allFeedback;
-        searchType = 'All Feedback';
-        thinking.push('📋 Scanning entire feedback database...');
+      // STEP 1: Understanding Query
+      container.innerHTML = buildStep(1, 'active', 'Understanding your question', [
+        { text: `Parsing: "${query.substring(0, 40)}${query.length > 40 ? '...' : ''}"`, status: 'active' }
+      ], 33);
+      area.scrollTop = area.scrollHeight;
+      await delay(600);
+
+      // STEP 2: Gathering Data
+      const sources = ['D1 Database', 'Email Channel', 'Discord', 'Support Tickets', 'Twitter', 'GitHub Issues'];
+      const searchChips = sources.map(s => ({ text: `Searching ${s}`, status: 'active' }));
+
+      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
+        { text: `Query type: ${analysisType.label}`, status: 'done' }
+      ], 33) + buildStep(2, 'active', 'Gathering feedback data from all sources', searchChips.slice(0, 3), 50);
+      area.scrollTop = area.scrollHeight;
+      await delay(500);
+
+      // Show more chips
+      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
+        { text: `Query type: ${analysisType.label}`, status: 'done' }
+      ], 33) + buildStep(2, 'active', 'Gathering feedback data from all sources', searchChips, 66);
+      area.scrollTop = area.scrollHeight;
+      await delay(600);
+
+      // STEP 3: Analyzing Patterns
+      const results = analysisType.filter(allFeedback);
+      const stats = computeStats(results);
+
+      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
+        { text: `Query type: ${analysisType.label}`, status: 'done' }
+      ], 33) + buildStep(2, 'done', 'Gathering feedback data from all sources', [
+        { text: `Found ${allFeedback.length} total items`, status: 'done' },
+        { text: `${results.length} match your query`, status: 'done' }
+      ], 66) + buildStep(3, 'active', 'Analyzing patterns and generating insights', [
+        { text: 'Computing sentiment distribution', status: 'active' },
+        { text: 'Identifying urgency trends', status: 'active' },
+        { text: 'Extracting key themes', status: 'active' }
+      ], 85);
+      area.scrollTop = area.scrollHeight;
+      await delay(800);
+
+      // STEP 4: Final Results with PM Insights
+      const insights = generatePMInsights(results, stats, analysisType);
+
+      container.innerHTML = buildStep(1, 'done', 'Understanding your question', [
+        { text: `Query type: ${analysisType.label}`, status: 'done' }
+      ], 100) + buildStep(2, 'done', 'Gathering feedback data from all sources', [
+        { text: `Found ${allFeedback.length} total items`, status: 'done' },
+        { text: `${results.length} match your query`, status: 'done' }
+      ], 100) + buildStep(3, 'done', 'Analyzing patterns and generating insights', [
+        { text: `Sentiment: ${stats.positive} positive, ${stats.negative} negative`, status: 'done' },
+        { text: `Urgency: ${stats.critical + stats.high} high-priority items`, status: 'done' }
+      ], 100) + buildInsightsSection(insights, results);
+
+      area.scrollTop = area.scrollHeight;
+      container.removeAttribute('id');
+    }
+
+    function detectAnalysisType(query) {
+      if (query.includes('critical') || query.includes('urgent') || query.includes('priority') || query.includes('blockers')) {
+        return { label: 'Critical Issues Analysis', filter: f => f.urgency === 'critical' || f.urgency === 'high' || f.sentiment === 'negative' };
       }
-
-      // Show thinking process
-      const thinkingHtml = thinking.map(step => `<div style="margin: 4px 0; color: #aaa; font-size: 12px;">→ ${step}</div>`).join('');
-      addMessage('ai', `<div style="color: #888; margin-bottom: 8px;"><strong>🧠 Thinking:</strong></div>${thinkingHtml}`, true);
-
-      // Show search parameters
-      if (searchFilters.length > 0) {
-        const filtersHtml = searchFilters.map(f => `<span style="background: rgba(243, 128, 32, 0.1); padding: 2px 6px; border-radius: 3px; margin: 0 4px 0 0; display: inline-block; color: #F38020; font-size: 11px;">${f}</span>`).join('');
-        addMessage('ai', `<div style="color: #888; font-size: 12px;"><strong>🔎 Search Filters:</strong> ${filtersHtml}</div>`, true);
+      if (query.includes('negative') || query.includes('complaint') || query.includes('unhappy') || query.includes('problems')) {
+        return { label: 'Negative Sentiment Analysis', filter: f => f.sentiment === 'negative' };
       }
+      if (query.includes('positive') || query.includes('happy') || query.includes('praise') || query.includes('good')) {
+        return { label: 'Positive Feedback Analysis', filter: f => f.sentiment === 'positive' };
+      }
+      if (query.includes('trend') || query.includes('pattern') || query.includes('overview') || query.includes('summary')) {
+        return { label: 'Trend Analysis', filter: f => true };
+      }
+      if (query.includes('feature') || query.includes('request') || query.includes('want') || query.includes('need')) {
+        return { label: 'Feature Request Analysis', filter: f => f.sentiment === 'neutral' || f.content.toLowerCase().includes('want') || f.content.toLowerCase().includes('need') };
+      }
+      if (query.includes('discord')) return { label: 'Discord Channel Analysis', filter: f => f.source === 'discord' };
+      if (query.includes('email')) return { label: 'Email Feedback Analysis', filter: f => f.source === 'email' };
+      if (query.includes('support') || query.includes('ticket')) return { label: 'Support Ticket Analysis', filter: f => f.source === 'support-ticket' };
+      if (query.includes('twitter') || query.includes('social')) return { label: 'Social Media Analysis', filter: f => f.source === 'twitter' };
+      if (query.includes('github') || query.includes('issue')) return { label: 'GitHub Issues Analysis', filter: f => f.source === 'github-issue' };
+      return { label: 'General Feedback Analysis', filter: f => true };
+    }
 
-      // Show results with clickable sources
-      if (results.length === 0) {
-        addMessage('ai', `✗ No results found for "${searchType}". Try a different query!`);
-      } else {
-        const summary = `✓ Found ${results.length} matching items`;
-        addMessage('ai', summary);
+    function computeStats(results) {
+      return {
+        total: results.length,
+        positive: results.filter(f => f.sentiment === 'positive').length,
+        negative: results.filter(f => f.sentiment === 'negative').length,
+        neutral: results.filter(f => f.sentiment === 'neutral').length,
+        critical: results.filter(f => f.urgency === 'critical').length,
+        high: results.filter(f => f.urgency === 'high').length,
+        medium: results.filter(f => f.urgency === 'medium').length,
+        low: results.filter(f => f.urgency === 'low').length,
+        sources: [...new Set(results.map(r => r.source))]
+      };
+    }
 
-        // Show top 3 results with sources
-        results.slice(0, 3).forEach((item, idx) => {
-          const sourceColor = {
-            'email': '#60a5fa',
-            'discord': '#7c3aed',
-            'support-ticket': '#f59e0b',
-            'twitter': '#3b82f6',
-            'github-issue': '#6366f1'
-          }[item.source] || '#888';
+    function generatePMInsights(results, stats, analysisType) {
+      const insights = [];
 
-          const sourceEmoji = getEmoji(item.source);
-          const resultHtml = `
-            <div style="margin-top: 8px; padding: 8px; background: rgba(243, 128, 32, 0.05); border-left: 3px solid ${sourceColor}; border-radius: 4px;">
-              <div style="color: ${sourceColor}; font-size: 11px; font-weight: 600; margin-bottom: 4px;">${sourceEmoji} ${item.source.toUpperCase()}</div>
-              <div style="color: #d5d5d5; font-size: 12px; margin-bottom: 4px;">"${escapeHtml(item.content)}"</div>
-              <div style="font-size: 11px; color: #888;">
-                📌 Sentiment: <span style="color: ${item.sentiment === 'positive' ? '#22c55e' : item.sentiment === 'negative' ? '#ef4444' : '#888'}">${item.sentiment}</span>
-                ⚡ Urgency: <span style="color: ${item.urgency === 'critical' ? '#dc2626' : item.urgency === 'high' ? '#f97316' : '#888'}">${item.urgency}</span>
-                ${item.author ? `👤 Author: ${escapeHtml(item.author)}` : ''}
-              </div>
-            </div>
-          `;
-          addMessage('ai', resultHtml, true);
+      // Key Metric
+      if (stats.total > 0) {
+        const negPercent = Math.round((stats.negative / stats.total) * 100);
+        const critPercent = Math.round(((stats.critical + stats.high) / stats.total) * 100);
+
+        insights.push({
+          type: 'metric',
+          title: 'Key Metrics',
+          content: `${stats.total} items analyzed • ${negPercent}% negative sentiment • ${critPercent}% high-priority`
         });
-
-        // Show sources at the end
-        if (results.length > 0) {
-          const sources = [...new Set(results.map(r => r.source))];
-          const sourcesHtml = sources.map(s => {
-            const count = results.filter(r => r.source === s).length;
-            return `<button onclick="document.querySelectorAll('[data-source=\\\"${s}\\\"]')[0]?.click(); document.getElementById('rightPanel').scrollIntoView({behavior: 'smooth'});" style="background: rgba(243, 128, 32, 0.1); border: 1px solid rgba(243, 128, 32, 0.25); color: #F38020; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; margin: 4px 4px 4px 0; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(243, 128, 32, 0.2)'" onmouseout="this.style.background='rgba(243, 128, 32, 0.1)'">📌 ${getEmoji(s)} ${s} (${count})</button>`;
-          }).join('');
-          addMessage('ai', `<div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);"><strong style="color: #888; font-size: 11px;">📍 SOURCES (Click to filter):</strong><div style="margin-top: 6px;">${sourcesHtml}</div></div>`, true);
-        }
       }
+
+      // Critical Action Items
+      const criticalItems = results.filter(f => f.urgency === 'critical' || (f.urgency === 'high' && f.sentiment === 'negative'));
+      if (criticalItems.length > 0) {
+        insights.push({
+          type: 'action',
+          title: 'Requires Immediate Attention',
+          priority: 'p1',
+          content: criticalItems[0].content,
+          source: criticalItems[0].source
+        });
+      }
+
+      // High Priority
+      const highItems = results.filter(f => f.urgency === 'high' && f.sentiment !== 'positive');
+      if (highItems.length > 1) {
+        insights.push({
+          type: 'action',
+          title: 'High Priority Items',
+          priority: 'p2',
+          content: `${highItems.length} items need attention this week`,
+          items: highItems.slice(0, 2)
+        });
+      }
+
+      // Recommendation
+      if (stats.negative > stats.positive) {
+        insights.push({
+          type: 'recommendation',
+          title: 'PM Recommendation',
+          content: `Negative feedback (${stats.negative}) outweighs positive (${stats.positive}). Consider scheduling a customer feedback review to identify root causes.`
+        });
+      } else if (stats.positive > stats.negative * 2) {
+        insights.push({
+          type: 'recommendation',
+          title: 'PM Recommendation',
+          content: `Strong positive sentiment! Consider reaching out to happy customers for testimonials or case studies.`
+        });
+      }
+
+      // Source Distribution
+      if (stats.sources.length > 1) {
+        const sourceCounts = stats.sources.map(s => ({
+          source: s,
+          count: results.filter(r => r.source === s).length
+        })).sort((a, b) => b.count - a.count);
+
+        insights.push({
+          type: 'distribution',
+          title: 'Feedback Sources',
+          sources: sourceCounts
+        });
+      }
+
+      return insights;
+    }
+
+    function buildStep(num, status, title, chips, progress) {
+      const chipsHtml = chips.map(c => `<span class="ai-chip ${c.status}">${c.status === 'active' ? '◉' : '✓'} ${c.text}</span>`).join('');
+      return `
+        <div class="ai-step ${status === 'pending' ? 'pending' : ''}">
+          <div class="ai-step-num ${status}">${status === 'done' ? '✓' : num}</div>
+          <div class="ai-step-content">
+            <div class="ai-step-title">${title}</div>
+            <div class="ai-chips">${chipsHtml}</div>
+          </div>
+        </div>
+        ${progress ? `<div class="ai-progress"><div class="ai-progress-bar" style="width: ${progress}%"></div></div>` : ''}
+      `;
+    }
+
+    function buildInsightsSection(insights, results) {
+      let html = '<div style="margin-top: 16px;">';
+
+      insights.forEach(insight => {
+        if (insight.type === 'metric') {
+          html += `<div class="ai-insight">
+            <div class="ai-insight-label">📊 ${insight.title}</div>
+            <div class="ai-insight-text">${insight.content}</div>
+          </div>`;
+        } else if (insight.type === 'action') {
+          html += `<div class="ai-action">
+            <span class="ai-priority ${insight.priority}">${insight.priority === 'p1' ? 'Critical' : 'High'}</span>
+            <div>
+              <div style="font-size: 11px; color: #F38020; margin-bottom: 2px;">${insight.title}</div>
+              <div class="ai-action-text">"${escapeHtml(insight.content)}"</div>
+              ${insight.source ? `<div style="font-size: 10px; color: #666; margin-top: 4px;">Source: ${insight.source}</div>` : ''}
+            </div>
+          </div>`;
+        } else if (insight.type === 'recommendation') {
+          html += `<div class="ai-insight" style="border-left-color: #22c55e;">
+            <div class="ai-insight-label" style="color: #22c55e;">💡 ${insight.title}</div>
+            <div class="ai-insight-text">${insight.content}</div>
+          </div>`;
+        } else if (insight.type === 'distribution') {
+          const btns = insight.sources.map(s =>
+            `<button class="ai-source-btn" onclick="document.querySelectorAll('[data-source=\\'${s.source}\\']')[0]?.click()">
+              ${getEmoji(s.source)} ${s.source} (${s.count})
+            </button>`
+          ).join('');
+          html += `<div class="ai-sources">
+            <div class="ai-sources-label">📍 Sources (click to filter)</div>
+            ${btns}
+          </div>`;
+        }
+      });
+
+      // Top results preview
+      if (results.length > 0) {
+        html += `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Top Results Preview</div>`;
+        results.slice(0, 2).forEach(item => {
+          const sColor = item.sentiment === 'positive' ? '#22c55e' : item.sentiment === 'negative' ? '#ef4444' : '#888';
+          html += `<div style="padding: 8px; background: rgba(255,255,255,0.02); border-radius: 6px; margin-bottom: 6px; font-size: 12px;">
+            <div style="color: ${sColor}; font-size: 10px; margin-bottom: 4px;">${getEmoji(item.source)} ${item.source} • ${item.sentiment} • ${item.urgency}</div>
+            <div style="color: #ccc;">"${escapeHtml(item.content.substring(0, 80))}${item.content.length > 80 ? '...' : ''}"</div>
+          </div>`;
+        });
+        html += '</div>';
+      }
+
+      html += '</div>';
+      return html;
     }
 
     function escapeHtml(text) {
