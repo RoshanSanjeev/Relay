@@ -575,6 +575,31 @@
       border-color: rgba(239, 68, 68, 0.25);
     }
 
+    .badge.urgency-critical {
+      background: rgba(220, 38, 38, 0.15);
+      color: #dc2626;
+      border-color: rgba(220, 38, 38, 0.3);
+      font-weight: 600;
+    }
+
+    .badge.urgency-high {
+      background: rgba(249, 115, 22, 0.15);
+      color: #f97316;
+      border-color: rgba(249, 115, 22, 0.3);
+    }
+
+    .badge.urgency-medium {
+      background: rgba(234, 179, 8, 0.15);
+      color: #eab308;
+      border-color: rgba(234, 179, 8, 0.3);
+    }
+
+    .badge.urgency-low {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+      border-color: rgba(34, 197, 94, 0.25);
+    }
+
     .empty-state {
       text-align: center;
       padding: 60px 20px;
@@ -757,6 +782,40 @@
               </div>
             </div>
           </div>
+
+          <div class="filter-section">
+            <label class="filter-label">Urgency</label>
+            <div class="filter-options">
+              <div class="filter-option" data-urgency="critical">
+                <input type="checkbox" id="filter-critical" />
+                <label for="filter-critical">
+                  <span>🔴 Critical</span>
+                  <span class="filter-count" id="count-critical">0</span>
+                </label>
+              </div>
+              <div class="filter-option" data-urgency="high">
+                <input type="checkbox" id="filter-high" />
+                <label for="filter-high">
+                  <span>🟠 High</span>
+                  <span class="filter-count" id="count-high">0</span>
+                </label>
+              </div>
+              <div class="filter-option" data-urgency="medium">
+                <input type="checkbox" id="filter-medium" />
+                <label for="filter-medium">
+                  <span>🟡 Medium</span>
+                  <span class="filter-count" id="count-medium">0</span>
+                </label>
+              </div>
+              <div class="filter-option" data-urgency="low">
+                <input type="checkbox" id="filter-low" />
+                <label for="filter-low">
+                  <span>🟢 Low</span>
+                  <span class="filter-count" id="count-low">0</span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="results-container">
@@ -769,21 +828,22 @@
 
   <script>
     const mockFeedback = [
-      { content: 'Login completely broken, blocking all user access', source: 'support-ticket', sentiment: 'negative', author: 'Support' },
-      { content: 'New dashboard design is amazing, very intuitive', source: 'discord', sentiment: 'positive', author: 'User #234' },
-      { content: 'API docs are outdated and missing examples', source: 'github-issue', sentiment: 'negative', author: 'Dev' },
-      { content: 'Excellent customer support response time', source: 'email', sentiment: 'positive', author: 'Client' },
-      { content: 'Performance is slow during peak hours', source: 'twitter', sentiment: 'negative', author: '@feedback' },
-      { content: 'Would love dark mode support', source: 'discord', sentiment: 'neutral', author: 'User #567' },
-      { content: 'Slack integration would be powerful', source: 'github-issue', sentiment: 'positive', author: 'Engineer' },
-      { content: 'Pricing is higher than competitors', source: 'email', sentiment: 'negative', author: 'Prospect' },
-      { content: 'Works well for our enterprise needs', source: 'support-ticket', sentiment: 'positive', author: 'PM' },
-      { content: 'Mobile app crashes on startup', source: 'twitter', sentiment: 'negative', author: '@user' },
+      { content: 'Login completely broken, blocking all user access', source: 'support-ticket', sentiment: 'negative', urgency: 'critical', author: 'Support' },
+      { content: 'New dashboard design is amazing, very intuitive', source: 'discord', sentiment: 'positive', urgency: 'low', author: 'User #234' },
+      { content: 'API docs are outdated and missing examples', source: 'github-issue', sentiment: 'negative', urgency: 'high', author: 'Dev' },
+      { content: 'Excellent customer support response time', source: 'email', sentiment: 'positive', urgency: 'low', author: 'Client' },
+      { content: 'Performance is slow during peak hours', source: 'twitter', sentiment: 'negative', urgency: 'high', author: '@feedback' },
+      { content: 'Would love dark mode support', source: 'discord', sentiment: 'neutral', urgency: 'medium', author: 'User #567' },
+      { content: 'Slack integration would be powerful', source: 'github-issue', sentiment: 'positive', urgency: 'medium', author: 'Engineer' },
+      { content: 'Pricing is higher than competitors', source: 'email', sentiment: 'negative', urgency: 'medium', author: 'Prospect' },
+      { content: 'Works well for our enterprise needs', source: 'support-ticket', sentiment: 'positive', urgency: 'low', author: 'PM' },
+      { content: 'Mobile app crashes on startup', source: 'twitter', sentiment: 'negative', urgency: 'critical', author: '@user' },
     ];
 
     let allFeedback = [];
     let selectedSources = new Set(['all']);
     let selectedSentiments = new Set();
+    let selectedUrgencies = new Set();
 
     async function init() {
       await loadFeedback();
@@ -830,10 +890,11 @@
     }
 
     function updateCounts() {
-      const counts = { email: 0, discord: 0, 'support-ticket': 0, twitter: 0, 'github-issue': 0, positive: 0, neutral: 0, negative: 0 };
+      const counts = { email: 0, discord: 0, 'support-ticket': 0, twitter: 0, 'github-issue': 0, positive: 0, neutral: 0, negative: 0, critical: 0, high: 0, medium: 0, low: 0 };
       allFeedback.forEach(item => {
         if (counts[item.source] !== undefined) counts[item.source]++;
         if (counts[item.sentiment] !== undefined) counts[item.sentiment]++;
+        if (counts[item.urgency] !== undefined) counts[item.urgency]++;
       });
       Object.entries(counts).forEach(([key, count]) => {
         const el = document.getElementById(`count-${key}`);
@@ -844,11 +905,13 @@
     function displayFeedback() {
       const sources = selectedSources.has('all') ? null : Array.from(selectedSources);
       const sentiments = selectedSentiments.size > 0 ? Array.from(selectedSentiments) : null;
+      const urgencies = selectedUrgencies.size > 0 ? Array.from(selectedUrgencies) : null;
 
       let filtered = allFeedback.filter(item => {
         const sourceMatch = !sources || sources.includes(item.source);
         const sentimentMatch = !sentiments || sentiments.includes(item.sentiment);
-        return sourceMatch && sentimentMatch;
+        const urgencyMatch = !urgencies || urgencies.includes(item.urgency);
+        return sourceMatch && sentimentMatch && urgencyMatch;
       });
 
       const list = document.getElementById('feedbackList');
@@ -867,6 +930,7 @@
           <div class="feedback-text">${escapeHtml(item.content)}</div>
           <div class="feedback-meta">
             <span class="badge sentiment-${item.sentiment}">${item.sentiment}</span>
+            <span class="badge urgency-${item.urgency}">⚡ ${item.urgency}</span>
             ${item.author ? `<span class="badge">👤 ${item.author}</span>` : ''}
           </div>
         </div>
@@ -912,6 +976,16 @@
         });
       });
 
+      document.querySelectorAll('[data-urgency]').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const urgency = opt.dataset.urgency;
+          const cb = opt.querySelector('input');
+          cb.checked = !cb.checked;
+          cb.checked ? selectedUrgencies.add(urgency) : selectedUrgencies.delete(urgency);
+          displayFeedback();
+        });
+      });
+
       document.querySelectorAll('.quick-action-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.getElementById('aiInput').value = btn.dataset.prompt;
@@ -942,8 +1016,11 @@
       let response = '';
 
       if (lower.includes('critical') || lower.includes('urgent') || lower.includes('priority')) {
-        const critical = allFeedback.filter(f => f.sentiment === 'negative' || f.source === 'support-ticket');
-        response = critical.length ? `Found ${critical.length} critical items:\n\n${critical.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No critical issues found!';
+        const critical = allFeedback.filter(f => f.urgency === 'critical' || f.sentiment === 'negative' || f.source === 'support-ticket');
+        response = critical.length ? `Found ${critical.length} critical items:\n\n${critical.slice(0, 3).map(f => `• [${f.urgency.toUpperCase()}] ${f.content}`).join('\n')}` : 'No critical issues found!';
+      } else if (lower.includes('high urgency') || lower.includes('high priority')) {
+        const high = allFeedback.filter(f => f.urgency === 'high' || f.urgency === 'critical');
+        response = high.length ? `Found ${high.length} high urgency items:\n\n${high.slice(0, 3).map(f => `• [${f.urgency}] ${f.content}`).join('\n')}` : 'No high urgency items.';
       } else if (lower.includes('negative') || lower.includes('complaint')) {
         const neg = allFeedback.filter(f => f.sentiment === 'negative');
         response = neg.length ? `${neg.length} negative feedback:\n\n${neg.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n')}` : 'No negative feedback!';
@@ -960,7 +1037,7 @@
         const sup = allFeedback.filter(f => f.source === 'support-ticket');
         response = sup.length ? `${sup.length} support tickets:\n\n${sup.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No tickets.';
       } else {
-        response = `I found ${allFeedback.length} total feedback items. Try asking about "critical", "negative", or a specific source like "Discord" or "email".`;
+        response = `I found ${allFeedback.length} total feedback items. Try asking about "critical", "negative", urgency levels, or a specific source like "Discord" or "email".`;
       }
 
       addMessage('ai', response);
