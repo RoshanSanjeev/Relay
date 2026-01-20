@@ -1,0 +1,57 @@
+name = "feedback-intelligence"
+main = "src/index.ts"
+compatibility_date = "2025-09-27"
+compatibility_flags = ["global_fetch_strictly_public"]
+
+# FRICTION LOG COMMENT:
+# Connecting multiple Cloudflare products required understanding which binding types exist
+# and how they relate to actual resources. The documentation mentions "how to add bindings"
+# but doesn't clearly show a minimal working example with D1, R2, AI, and Vectorize together.
+
+[env.production]
+# This ensures we can use different resources for dev vs production
+route = "feedback-intelligence.account.workers.dev"
+
+# R2 Bucket Binding
+# FRICTION: Setting up R2 requires creating the bucket first in the dashboard.
+# Then you need to know the exact binding name to use in code.
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "feedback-raw"
+preview_bucket_name = "feedback-raw-dev"
+
+# D1 Database Binding
+# FRICTION: D1 requires database_id from dashboard. No clear way to auto-create
+# via wrangler.toml - must use dashboard or local SQLite for development.
+[[d1_databases]]
+binding = "D1_DB"
+database_name = "feedback-warehouse"
+database_id = "mock-db-id"  # Replace with actual ID after creating in dashboard
+
+# Workers AI Binding
+# FRICTION: AI binding is simpler, but documentation doesn't show which models are available
+# without visiting the models page separately.
+[ai]
+binding = "AI"
+
+# Vectorize Binding (AI Search)
+# FRICTION: Vectorize index_name must match an actual index created in dashboard.
+# No local emulation available - makes development harder.
+[[vectorize]]
+binding = "VECTORIZE_INDEX"
+index_name = "feedback-vectors"
+
+# Workflow Binding
+# FRICTION: Workflows binding is less documented. Had to find examples to understand
+# how to trigger workflows from a Worker.
+[workflows]
+binding = "WORKFLOW"
+class_name = "ProcessFeedbackWorkflow"
+
+# Assets for serving React frontend
+[assets]
+directory = "./public"
+
+# Observability
+[observability]
+enabled = true
