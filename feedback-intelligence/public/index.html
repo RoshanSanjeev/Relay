@@ -200,6 +200,24 @@
       background: rgba(243, 128, 32, 0.5);
     }
 
+    /* ========== VERTICAL DIVIDER (within right panel) ========== */
+    .v-divider {
+      height: 6px;
+      background: rgba(243, 128, 32, 0.1);
+      cursor: row-resize;
+      transition: background-color 0.2s ease;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .v-divider:hover {
+      background: rgba(243, 128, 32, 0.3);
+    }
+
+    .v-divider.dragging {
+      background: rgba(243, 128, 32, 0.5);
+    }
+
     /* ========== LEFT PANEL - AI CHAT ========== */
     .left-panel {
       flex: 0 0 48%;
@@ -402,14 +420,22 @@
       background: rgba(15, 15, 15, 0.3);
       position: relative;
       min-width: 300px;
+      overflow: hidden;
+    }
+
+    .right-panel-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
     }
 
     .filters-container {
       padding: 28px 28px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       background: linear-gradient(to bottom, rgba(30, 30, 30, 0.5), rgba(20, 20, 20, 0.2));
-      max-height: 280px;
       overflow-y: auto;
+      flex: 0 0 200px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .filters-container::-webkit-scrollbar {
@@ -730,7 +756,8 @@
           <p>Filter by Source & Sentiment</p>
         </div>
 
-        <div class="filters-container">
+        <div class="right-panel-content" id="rightPanelContent">
+          <div class="filters-container" id="filtersContainer">
           <div class="filter-section">
             <label class="filter-label">Source</label>
             <div class="filter-options">
@@ -840,9 +867,13 @@
           </div>
         </div>
 
-        <div class="results-container">
+        <!-- VERTICAL DIVIDER -->
+        <div class="v-divider" id="vDivider"></div>
+
+        <div class="results-container" id="resultsContainer">
           <div class="results-header" id="resultsHeader">All Feedback</div>
           <div class="feedback-list" id="feedbackList"></div>
+        </div>
         </div>
       </div>
     </div>
@@ -902,6 +933,46 @@
       if (isDragging) {
         isDragging = false;
         divider.classList.remove('dragging');
+        document.body.style.cursor = 'default';
+        document.body.style.userSelect = 'auto';
+      }
+    });
+
+    /* ========== VERTICAL DIVIDER (filters vs results) ========== */
+    let isVDragging = false;
+    const vDivider = document.getElementById('vDivider');
+    const rightPanelContent = document.getElementById('rightPanelContent');
+    const filtersContainer = document.getElementById('filtersContainer');
+    const resultsContainer = document.getElementById('resultsContainer');
+
+    vDivider.addEventListener('mousedown', () => {
+      isVDragging = true;
+      vDivider.classList.add('dragging');
+      document.body.style.cursor = 'row-resize';
+      document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isVDragging) return;
+
+      const contentRect = rightPanelContent.getBoundingClientRect();
+      const newFiltersHeight = e.clientY - contentRect.top;
+      const totalHeight = contentRect.height;
+
+      // Constrain to minimum heights (50px for filters, 100px for results)
+      if (newFiltersHeight < 50 || totalHeight - newFiltersHeight < 100) return;
+
+      const filtersPercent = (newFiltersHeight / totalHeight) * 100;
+      const resultsPercent = 100 - filtersPercent - 0.5; // 0.5% for divider
+
+      filtersContainer.style.flex = `0 0 ${filtersPercent}%`;
+      resultsContainer.style.flex = `0 0 ${resultsPercent}%`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isVDragging) {
+        isVDragging = false;
+        vDivider.classList.remove('dragging');
         document.body.style.cursor = 'default';
         document.body.style.userSelect = 'auto';
       }
