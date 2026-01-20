@@ -2026,17 +2026,27 @@
         const shuffled = [...mockFeedback].sort(() => Math.random() - 0.5);
         const items = shuffled.slice(0, 20);
 
-        for (const fb of items) {
-          await fetch('/api/feedback', {
+        // Add items to database
+        const promises = items.map(fb =>
+          fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(fb),
-          });
-        }
-        await loadFeedback();
+          })
+        );
+        await Promise.all(promises);
+
+        // Reload data from server
+        const response = await fetch('/api/feedback?limit=1000');
+        const data = await response.json();
+        allFeedback = data.data || [];
+
+        // Update all UI elements
         updateCounts();
-        updateMockDataCount(true); // Animate the count update
+        updateMockDataCount(true);
         displayFeedback();
+      } catch (error) {
+        console.error('Error adding mock data:', error);
       } finally {
         btn.disabled = false;
         btn.textContent = 'Add Mock Data';

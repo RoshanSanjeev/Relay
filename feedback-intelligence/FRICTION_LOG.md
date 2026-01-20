@@ -401,6 +401,80 @@ This makes it nearly impossible to diagnose issues without extensive logging.
 
 ---
 
+## Friction Point 15: D1 NOT NULL Constraint Discovery
+
+**Title:** Schema constraints not surfaced during development
+
+**Problem:**
+When trying to seed the D1 database programmatically, I encountered cryptic errors:
+```
+NOT NULL constraint failed: feedback.title: SQLITE_CONSTRAINT
+```
+
+The issue was that the table schema required a `title` column, but this wasn't obvious from:
+1. The error message during initial insert attempts (showed as `[object Object]`)
+2. The wrangler output which didn't show the full schema
+3. Local development, where schema validation behaves differently
+
+I had to manually query `PRAGMA table_info(feedback)` to discover the required columns and their constraints.
+
+**Suggestion:**
+1. **Improve D1 error messages** to show the actual constraint name and affected column clearly
+2. **Add a `wrangler d1 schema` command** that displays table schemas in a readable format
+3. **Generate TypeScript types from D1 schema** so IDE catches missing fields before runtime
+4. **Local dev validation**: Validate inserts against schema during `wrangler dev` before deployment
+
+---
+
+## Friction Point 16: D1 Seeding Not First-Class
+
+**Title:** No built-in seed command for D1 databases
+
+**Problem:**
+Seeding a D1 database with test data requires manual SQL statements or custom scripts. There's no:
+1. `wrangler d1 seed` command with support for JSON/CSV files
+2. Way to define seed data in `wrangler.toml` or a dedicated file
+3. Transaction support for bulk inserts that atomically succeed or fail
+
+I had to write individual INSERT statements via `wrangler d1 execute`, which is slow and error-prone for large datasets. A Node.js seed script appeared to succeed but didn't actually insert data due to binding issues.
+
+**Suggestion:**
+1. Add **`wrangler d1 seed <db> --file seeds/data.sql`** command
+2. Support **JSON seed files** that auto-generate INSERT statements
+3. Provide **transaction wrapping** for seed operations
+4. Add **`--reset` flag** to clear tables before seeding
+
+---
+
+## Friction Point 17: Multi-Agent AI Workflow Complexity
+
+**Title:** Building multi-step AI workflows requires significant boilerplate
+
+**Problem:**
+When implementing a multi-agent system (Query Classifier → Data Retrieval → Sentiment Analysis → PM Insights), there's no built-in support for:
+1. Orchestrating multiple AI model calls in sequence
+2. Passing context between agents
+3. Handling partial failures gracefully
+4. Implementing retry logic with exponential backoff
+5. Streaming intermediate results to the client
+
+Each step required custom code for error handling, result parsing, and state management. The code quickly became complex and hard to maintain.
+
+**Suggestion:**
+1. Create **Workers AI Chains** - a pattern for composing multiple AI calls:
+   ```typescript
+   const chain = AI.chain()
+     .classify('@cf/classifier-model', query)
+     .thenFetch(async (classification) => await db.query(...))
+     .thenAnalyze('@cf/sentiment-model', sentiment)
+     .thenGenerate('@cf/llama', insights);
+   ```
+2. Provide **built-in retry and timeout handling** for each step
+3. Support **streaming intermediate results** via Server-Sent Events
+4. Document **multi-agent patterns** with complete examples
+
+---
+
 ## Positive Observations
 
 While there were friction points, some things worked well:
@@ -421,11 +495,13 @@ While there were friction points, some things worked well:
 | 🔴 High | Improve D1 error messages | Enables faster debugging |
 | 🔴 High | Workers AI batch inference support | Improves performance & reduces costs |
 | 🔴 High | Better Workers AI error messages | Enables debugging AI integrations |
+| 🔴 High | D1 seeding support (`wrangler d1 seed`) | Enables rapid data setup |
 | 🟡 Medium | Unified binding configuration guide | Reduces onboarding friction |
 | 🟡 Medium | Workflow documentation improvements | Enables complex pipelines |
 | 🟡 Medium | Workers AI model reference table | Improves discoverability |
 | 🟡 Medium | AI binding graceful degradation docs | Helps dev/prod parity |
 | 🟡 Medium | Document AI model regional availability | Prevents deployment surprises |
+| 🟡 Medium | Multi-agent AI workflow patterns | Enables complex AI applications |
 | 🟢 Low | Use-case-driven guides | Helps with larger projects |
 | 🟢 Low | R2 bucket auto-provisioning | Nice-to-have automation |
 
@@ -433,27 +509,30 @@ While there were friction points, some things worked well:
 
 ## Build Time Notes
 
-- **Total build time**: ~90 minutes for full MVP with AI integration
+- **Total build time**: ~120 minutes for full MVP with multi-agent AI system
 - **Largest time sinks**:
   1. Understanding binding configuration (10 min)
   2. Debugging D1 schema errors (8 min)
   3. Workers AI model selection and integration (20 min)
   4. Workers AI error handling and fallbacks (12 min)
-  5. Frontend AI visualization implementation (25 min)
+  5. Frontend multi-agent visualization implementation (35 min)
   6. Architecture documentation (5 min)
   7. Testing and deployment cycles (10 min)
+  8. D1 database seeding and constraint debugging (15 min)
+  9. Multi-agent workflow orchestration (15 min)
 
-The friction points added approximately 40 minutes of overhead compared to building on a platform with better local dev tools, clearer documentation, and more informative error messages.
+The friction points added approximately 50 minutes of overhead compared to building on a platform with better local dev tools, clearer documentation, and more informative error messages.
 
 ---
 
 ## Friction Points Summary
 
-**14 friction points documented** covering:
+**17 friction points documented** covering:
 - Configuration: wrangler.toml syntax inconsistencies (#1)
 - Local Development: Missing emulators for Vectorize, R2 (#2, #5, #7, #8)
-- Error Handling: D1 and Workers AI errors lack context (#3, #14)
+- Error Handling: D1 and Workers AI errors lack context (#3, #14, #15)
 - Documentation: Workflows, AI models, regional availability (#4, #6, #10, #11, #12, #13)
-- Tooling: No type safety for bindings (#9)
+- Tooling: No type safety for bindings, no D1 seeding (#9, #16)
+- AI Development: No multi-agent workflow patterns (#17)
 
-**Most impactful for PM assignment**: Friction points #11-14 related to Workers AI are particularly relevant as they directly affected the ability to build AI-powered feedback analysis features.
+**Most impactful for PM assignment**: Friction points #11-17 related to Workers AI and D1 are particularly relevant as they directly affected the ability to build AI-powered feedback analysis features and seed test data for development.
