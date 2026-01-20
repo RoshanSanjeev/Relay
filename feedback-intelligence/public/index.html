@@ -182,14 +182,32 @@
       gap: 0;
     }
 
+    /* ========== DRAGGABLE DIVIDER ========== */
+    .divider {
+      width: 6px;
+      background: rgba(243, 128, 32, 0.1);
+      cursor: col-resize;
+      transition: background-color 0.2s ease;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .divider:hover {
+      background: rgba(243, 128, 32, 0.3);
+    }
+
+    .divider.dragging {
+      background: rgba(243, 128, 32, 0.5);
+    }
+
     /* ========== LEFT PANEL - AI CHAT ========== */
     .left-panel {
       flex: 0 0 48%;
       display: flex;
       flex-direction: column;
       background: rgba(20, 20, 20, 0.4);
-      border-right: 1px solid rgba(243, 128, 32, 0.08);
       position: relative;
+      min-width: 300px;
     }
 
     .left-panel::after {
@@ -383,6 +401,7 @@
       flex-direction: column;
       background: rgba(15, 15, 15, 0.3);
       position: relative;
+      min-width: 300px;
     }
 
     .filters-container {
@@ -673,9 +692,9 @@
     </header>
 
     <!-- CONTENT -->
-    <div class="content">
+    <div class="content" id="content">
       <!-- LEFT PANEL -->
-      <div class="left-panel">
+      <div class="left-panel" id="leftPanel">
         <div class="panel-header">
           <h2>AI Assistant</h2>
           <p>Ask Questions About Your Feedback</p>
@@ -701,8 +720,11 @@
         </div>
       </div>
 
+      <!-- DRAGGABLE DIVIDER -->
+      <div class="divider" id="divider"></div>
+
       <!-- RIGHT PANEL -->
-      <div class="right-panel">
+      <div class="right-panel" id="rightPanel">
         <div class="panel-header">
           <h2>Browse Feedback</h2>
           <p>Filter by Source & Sentiment</p>
@@ -844,6 +866,46 @@
     let selectedSources = new Set(['all']);
     let selectedSentiments = new Set();
     let selectedUrgencies = new Set();
+
+    /* ========== DRAGGABLE DIVIDER ========== */
+    let isDragging = false;
+    const divider = document.getElementById('divider');
+    const content = document.getElementById('content');
+    const leftPanel = document.getElementById('leftPanel');
+    const rightPanel = document.getElementById('rightPanel');
+
+    divider.addEventListener('mousedown', () => {
+      isDragging = true;
+      divider.classList.add('dragging');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+
+      const contentRect = content.getBoundingClientRect();
+      const newLeftWidth = e.clientX - contentRect.left;
+      const totalWidth = contentRect.width;
+
+      // Constrain to minimum widths
+      if (newLeftWidth < 300 || totalWidth - newLeftWidth < 300) return;
+
+      const leftPercent = (newLeftWidth / totalWidth) * 100;
+      const rightPercent = 100 - leftPercent - 0.5; // 0.5% for divider
+
+      leftPanel.style.flex = `0 0 ${leftPercent}%`;
+      rightPanel.style.flex = `0 0 ${rightPercent}%`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        divider.classList.remove('dragging');
+        document.body.style.cursor = 'default';
+        document.body.style.userSelect = 'auto';
+      }
+    });
 
     async function init() {
       await loadFeedback();
@@ -994,11 +1056,18 @@
       });
     }
 
-    function addMessage(type, text) {
+    function addMessage(type, text, isHtml = false) {
       const area = document.getElementById('messagesArea');
       const msg = document.createElement('div');
       msg.className = `message ${type}`;
-      msg.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      if (isHtml) {
+        bubble.innerHTML = text;
+      } else {
+        bubble.textContent = text;
+      }
+      msg.appendChild(bubble);
       area.appendChild(msg);
       area.scrollTop = area.scrollHeight;
     }
@@ -1013,34 +1082,110 @@
       document.getElementById('quickActions').style.display = 'none';
 
       const lower = query.toLowerCase();
-      let response = '';
+      let searchFilters = [];
+      let results = [];
+
+      // Show thinking process
+      const thinking = [
+        '🔍 Analyzing your query...',
+        '📊 Searching through feedback database...'
+      ];
+
+      let searchType = '';
 
       if (lower.includes('critical') || lower.includes('urgent') || lower.includes('priority')) {
-        const critical = allFeedback.filter(f => f.urgency === 'critical' || f.sentiment === 'negative' || f.source === 'support-ticket');
-        response = critical.length ? `Found ${critical.length} critical items:\n\n${critical.slice(0, 3).map(f => `• [${f.urgency.toUpperCase()}] ${f.content}`).join('\n')}` : 'No critical issues found!';
+        searchFilters = ['urgency = critical', 'sentiment = negative', 'source = support-ticket'];
+        results = allFeedback.filter(f => f.urgency === 'critical' || f.sentiment === 'negative' || f.source === 'support-ticket');
+        searchType = 'Critical Feedback';
+        thinking.push('⚡ Filtering for critical and urgent items...');
       } else if (lower.includes('high urgency') || lower.includes('high priority')) {
-        const high = allFeedback.filter(f => f.urgency === 'high' || f.urgency === 'critical');
-        response = high.length ? `Found ${high.length} high urgency items:\n\n${high.slice(0, 3).map(f => `• [${f.urgency}] ${f.content}`).join('\n')}` : 'No high urgency items.';
+        searchFilters = ['urgency >= high'];
+        results = allFeedback.filter(f => f.urgency === 'high' || f.urgency === 'critical');
+        searchType = 'High Urgency Items';
+        thinking.push('⚡ Filtering for high urgency items...');
       } else if (lower.includes('negative') || lower.includes('complaint')) {
-        const neg = allFeedback.filter(f => f.sentiment === 'negative');
-        response = neg.length ? `${neg.length} negative feedback:\n\n${neg.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n')}` : 'No negative feedback!';
+        searchFilters = ['sentiment = negative'];
+        results = allFeedback.filter(f => f.sentiment === 'negative');
+        searchType = 'Negative Feedback';
+        thinking.push('😠 Finding complaints and negative feedback...');
       } else if (lower.includes('positive') || lower.includes('happy')) {
-        const pos = allFeedback.filter(f => f.sentiment === 'positive');
-        response = pos.length ? `${pos.length} positive items:\n\n${pos.slice(0, 3).map(f => `• [${f.source}] ${f.content}`).join('\n')}` : 'No positive feedback yet.';
+        searchFilters = ['sentiment = positive'];
+        results = allFeedback.filter(f => f.sentiment === 'positive');
+        searchType = 'Positive Feedback';
+        thinking.push('😊 Finding praise and positive comments...');
       } else if (lower.includes('discord')) {
-        const disc = allFeedback.filter(f => f.source === 'discord');
-        response = disc.length ? `${disc.length} Discord messages:\n\n${disc.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No Discord feedback.';
+        searchFilters = ['source = discord'];
+        results = allFeedback.filter(f => f.source === 'discord');
+        searchType = 'Discord Messages';
+        thinking.push('💬 Querying Discord channel...');
       } else if (lower.includes('email')) {
-        const email = allFeedback.filter(f => f.source === 'email');
-        response = email.length ? `${email.length} emails:\n\n${email.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No emails.';
+        searchFilters = ['source = email'];
+        results = allFeedback.filter(f => f.source === 'email');
+        searchType = 'Email Feedback';
+        thinking.push('📧 Searching email inbox...');
       } else if (lower.includes('support') || lower.includes('ticket')) {
-        const sup = allFeedback.filter(f => f.source === 'support-ticket');
-        response = sup.length ? `${sup.length} support tickets:\n\n${sup.slice(0, 3).map(f => `• ${f.content}`).join('\n')}` : 'No tickets.';
+        searchFilters = ['source = support-ticket'];
+        results = allFeedback.filter(f => f.source === 'support-ticket');
+        searchType = 'Support Tickets';
+        thinking.push('🎫 Checking support system...');
       } else {
-        response = `I found ${allFeedback.length} total feedback items. Try asking about "critical", "negative", urgency levels, or a specific source like "Discord" or "email".`;
+        results = allFeedback;
+        searchType = 'All Feedback';
+        thinking.push('📋 Scanning entire feedback database...');
       }
 
-      addMessage('ai', response);
+      // Show thinking process
+      const thinkingHtml = thinking.map(step => `<div style="margin: 4px 0; color: #aaa; font-size: 12px;">→ ${step}</div>`).join('');
+      addMessage('ai', `<div style="color: #888; margin-bottom: 8px;"><strong>🧠 Thinking:</strong></div>${thinkingHtml}`, true);
+
+      // Show search parameters
+      if (searchFilters.length > 0) {
+        const filtersHtml = searchFilters.map(f => `<span style="background: rgba(243, 128, 32, 0.1); padding: 2px 6px; border-radius: 3px; margin: 0 4px 0 0; display: inline-block; color: #F38020; font-size: 11px;">${f}</span>`).join('');
+        addMessage('ai', `<div style="color: #888; font-size: 12px;"><strong>🔎 Search Filters:</strong> ${filtersHtml}</div>`, true);
+      }
+
+      // Show results with clickable sources
+      if (results.length === 0) {
+        addMessage('ai', `✗ No results found for "${searchType}". Try a different query!`);
+      } else {
+        const summary = `✓ Found ${results.length} matching items`;
+        addMessage('ai', summary);
+
+        // Show top 3 results with sources
+        results.slice(0, 3).forEach((item, idx) => {
+          const sourceColor = {
+            'email': '#60a5fa',
+            'discord': '#7c3aed',
+            'support-ticket': '#f59e0b',
+            'twitter': '#3b82f6',
+            'github-issue': '#6366f1'
+          }[item.source] || '#888';
+
+          const sourceEmoji = getEmoji(item.source);
+          const resultHtml = `
+            <div style="margin-top: 8px; padding: 8px; background: rgba(243, 128, 32, 0.05); border-left: 3px solid ${sourceColor}; border-radius: 4px;">
+              <div style="color: ${sourceColor}; font-size: 11px; font-weight: 600; margin-bottom: 4px;">${sourceEmoji} ${item.source.toUpperCase()}</div>
+              <div style="color: #d5d5d5; font-size: 12px; margin-bottom: 4px;">"${escapeHtml(item.content)}"</div>
+              <div style="font-size: 11px; color: #888;">
+                📌 Sentiment: <span style="color: ${item.sentiment === 'positive' ? '#22c55e' : item.sentiment === 'negative' ? '#ef4444' : '#888'}">${item.sentiment}</span>
+                ⚡ Urgency: <span style="color: ${item.urgency === 'critical' ? '#dc2626' : item.urgency === 'high' ? '#f97316' : '#888'}">${item.urgency}</span>
+                ${item.author ? `👤 Author: ${escapeHtml(item.author)}` : ''}
+              </div>
+            </div>
+          `;
+          addMessage('ai', resultHtml, true);
+        });
+
+        // Show sources at the end
+        if (results.length > 0) {
+          const sources = [...new Set(results.map(r => r.source))];
+          const sourcesHtml = sources.map(s => {
+            const count = results.filter(r => r.source === s).length;
+            return `<button onclick="document.querySelectorAll('[data-source=\\\"${s}\\\"]')[0]?.click(); document.getElementById('rightPanel').scrollIntoView({behavior: 'smooth'});" style="background: rgba(243, 128, 32, 0.1); border: 1px solid rgba(243, 128, 32, 0.25); color: #F38020; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; margin: 4px 4px 4px 0; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(243, 128, 32, 0.2)'" onmouseout="this.style.background='rgba(243, 128, 32, 0.1)'">📌 ${getEmoji(s)} ${s} (${count})</button>`;
+          }).join('');
+          addMessage('ai', `<div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);"><strong style="color: #888; font-size: 11px;">📍 SOURCES (Click to filter):</strong><div style="margin-top: 6px;">${sourcesHtml}</div></div>`, true);
+        }
+      }
     }
 
     function escapeHtml(text) {
