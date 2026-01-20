@@ -112,7 +112,7 @@
       letter-spacing: 0.3px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       backdrop-filter: blur(10px);
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -120,6 +120,37 @@
     .mock-data-badge:hover {
       border-color: rgba(243, 128, 32, 0.5);
       background: rgba(243, 128, 32, 0.12);
+    }
+
+    .mock-data-badge .count-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      padding: 2px 8px;
+      background: rgba(243, 128, 32, 0.2);
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .mock-data-badge.updating .count-number {
+      animation: countPulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes countPulse {
+      0% { transform: scale(1); background: rgba(243, 128, 32, 0.2); }
+      50% { transform: scale(1.2); background: rgba(243, 128, 32, 0.5); }
+      100% { transform: scale(1); background: rgba(243, 128, 32, 0.2); }
+    }
+
+    .mock-data-badge .count-label {
+      font-size: 11px;
+      color: #888;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .button {
@@ -1594,11 +1625,11 @@
         <p>Multi-Agent AI System</p>
       </div>
       <div class="header-controls">
-        <div class="mock-data-badge">
-          <span class="source-icon"><svg viewBox="0 0 24 24" fill="#F38020"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></span>
-          <span id="mockDataCount">0 items</span>
+        <div class="mock-data-badge" id="mockDataBadge">
+          <span class="count-number" id="mockDataCount">0</span>
+          <span class="count-label">feedback items</span>
         </div>
-        <button class="button primary" id="generateMockBtn">+ Add 20 Feedback Items</button>
+        <button class="button primary" id="generateMockBtn">Add Mock Data</button>
       </div>
     </header>
 
@@ -1974,8 +2005,15 @@
       }
     }
 
-    function updateMockDataCount() {
-      document.getElementById('mockDataCount').textContent = `${allFeedback.length} items`;
+    function updateMockDataCount(animate = false) {
+      const countEl = document.getElementById('mockDataCount');
+      const badgeEl = document.getElementById('mockDataBadge');
+      countEl.textContent = allFeedback.length;
+
+      if (animate && badgeEl) {
+        badgeEl.classList.add('updating');
+        setTimeout(() => badgeEl.classList.remove('updating'), 400);
+      }
     }
 
     async function generateMockData() {
@@ -1997,10 +2035,11 @@
         }
         await loadFeedback();
         updateCounts();
+        updateMockDataCount(true); // Animate the count update
         displayFeedback();
       } finally {
         btn.disabled = false;
-        btn.textContent = '+ Add 20 Feedback Items';
+        btn.textContent = 'Add Mock Data';
       }
     }
 
@@ -2416,9 +2455,9 @@
       area.scrollTop = area.scrollHeight;
       await delay(300);
 
-      // Build final results
-      const results = apiResponse?.data?.sample || apiResponse?.filtered?.items || analysisType.filter(allFeedback);
-      const stats = apiResponse?.stats || computeStats(results);
+      // Build final results - use API response or filter local data
+      const results = apiResponse?.data?.sample || apiResponse?.filtered?.items || allFeedback.filter(analysisType.filter);
+      const stats = apiResponse?.stats || computeStats(allFeedback);
 
       // Get AI response if available
       let aiTextResponse = apiResponse?.response || '';
